@@ -1,103 +1,89 @@
+import Navbar from "@/components/Navbar";
+import SchoolCard from "@/components/SchoolCard";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <>
+      <section
+        className="w-full min-h-screen bg-cover bg-center flex flex-col items-center pb-40"
+        style={{ backgroundImage: "url('/images/Hero.png')" }}
+      >
+        <Navbar />
+        <div className="pt-13 flex flex-col items-center w-[930px]">
+          <h1 className="text-7xl font-semibold text-white text-center leading-[120%]">
+            Find the Right Preschool for Your Little One{" "}
+          </h1>
+          <p className="mt-6 text-white text-sm px-50 text-center">
+            Easily compare tuition, programs, and nearby locations from trusted
+            preschools in Metro Manila — no sign-ups, no stress
+          </p>
+          <div className="bg-white w-full p-5 rounded-3xl mt-6">
+            <h4 className="text-[#0F0F0F] text-2xl font-medium">
+              Serach schools around Philipines
+            </h4>
+            <div className="flex mt-6 gap-2.5 rounded-2xl">
+              <div className="bg-[#f5f5f5] w-[710px] cursor-pointer p-4 rounded-[10px] flex items-center gap-5">
+                <i className="ri-search-line text-[#0E1C29]/40 text-2xl"></i>
+                <p className="text-[#999999]">
+                  Search by school name, location...
+                </p>
+              </div>
+              <Link
+                href="/"
+                className="bg-[#774BE5] w-fit text-white p-4 rounded-[10px] text-sm font-semibold flex items-center gap-1"
+              >
+                View all schools
+                <i className="ri-arrow-right-fill text-white text-lg mt-0.5"></i>
+              </Link>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </section>
+
+      <section className="w-full px-10 py-25 bg-white">
+        <h2 className="text-[#000000] text-[56px] font-normal text-center">
+          Explore Preschools
+        </h2>
+        <div className="w-full grid grid-cols-3 gap-5 mt-11">
+          <SchoolCard
+            imageSrc="/images/Angioletto Preschool_logo_enhanced.png"
+            imageAlt="Angioletto"
+            schoolName="Angioletto Preschool"
+            location="Pasig City"
+            tags={["DepEd", "Christian"]}
+            priceRange="₱368,770 - ₱450,000"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+
+          <SchoolCard
+            imageSrc="/images/Assumption College San Lorenzo_logo_enhanced.png"
+            imageAlt="Assumption College San Lorenzo"
+            schoolName="Assumption College San Lorenzo"
+            location="Makati City"
+            tags={["DepEd", "Christian"]}
+            priceRange="₱148,082 - ₱368,770"
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
+
+          <SchoolCard
+            imageSrc="/images/British School Manila_logo.webp"
+            imageAlt="British School Manila"
+            schoolName="British School Manila"
+            location="Taguig City"
+            tags={["British", "IB"]}
+            priceRange="₱161,000 - ₱400,000"
           />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </div>
+        <div className="mt-11 mb-25 flex items-center justify-center w-full">
+         <div className="w-fit">
+           <Link href="/" className="bg-black rounded-[10px] text-white flex items-center gap-2 px-6 py-3">
+            <p className="text-base font-medium">View all schools</p>
+            <i className="ri-arrow-right-fill text-lg"></i>
+          </Link>
+         </div>
+        </div>
+      </section>
+    </>
   );
 }
+

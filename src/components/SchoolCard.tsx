@@ -49,7 +49,7 @@ const SchoolCard = ({
           <p className="text-base text-[#774BE5]">{priceRange}</p>
         </div>
         <Link
-          href="/"
+          href="/directory/angioletto-preschool"
           className="bg-[#774BE5] w-fit text-white p-4 rounded-[10px] text-sm font-semibold flex items-center h-11.5"
         >
           View Info

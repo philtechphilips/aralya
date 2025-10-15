@@ -3,7 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 
-const Navbar = () => {
+interface NavbarProps {
+  textColor?: 'white' | 'black';
+}
+
+const Navbar = ({ textColor = 'white' }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -64,13 +68,25 @@ const Navbar = () => {
         <ul className={`hidden md:flex items-center gap-20 font-semibold text-sm transition-all duration-500 ease-in-out ${
           isScrolling && isDesktop ? '' : 'justify-items-start w-2/3'
         }`}>
-          <li className="text-white hover:text-[#0E1C29] transition-colors duration-500 ease-in-out delay-100">
+          <li className={`transition-colors duration-500 ease-in-out delay-100 ${
+            isScrolling && isDesktop 
+              ? 'text-white hover:text-[#0E1C29]' 
+              : `text-${textColor} hover:text-[#774BE5]`
+          }`}>
             <Link href="/">Home</Link>
           </li>
-          <li className="text-white hover:text-[#0E1C29] transition-colors duration-500 ease-in-out delay-100">
-            <Link href="/about">About</Link>
+          <li className={`transition-colors duration-500 ease-in-out delay-100 ${
+            isScrolling && isDesktop 
+              ? 'text-white hover:text-[#0E1C29]' 
+              : `text-${textColor} hover:text-[#774BE5]`
+          }`}>
+            <Link href="/directory">Browse</Link>
           </li>
-          <li className="text-white hover:text-[#0E1C29] transition-colors duration-500 ease-in-out delay-100">
+          <li className={`transition-colors duration-500 ease-in-out delay-100 ${
+            isScrolling && isDesktop 
+              ? 'text-white hover:text-[#0E1C29]' 
+              : `text-${textColor} hover:text-[#774BE5]`
+          }`}>
             <Link href="/contact">Contact</Link>
           </li>
         </ul>

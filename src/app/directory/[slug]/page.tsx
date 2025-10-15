@@ -57,8 +57,8 @@ const SchoolDetails = () => {
             </div>
           </div>
 
-          <div className="flex items-start w-full gap-8 mt-11">
-            <div className="bg-[#774BE5] rounded-2xl p-8 w-1/2 shadow-2xl">
+          <div className="flex md:flex-row flex-col items-start w-full gap-8 mt-11">
+            <div className="bg-[#774BE5] rounded-2xl p-8 md:w-1/2 w-full shadow-2xl">
               <h6 className="text-white text-2xl font-medium text-center">
                 Contact School
               </h6>
@@ -87,110 +87,110 @@ const SchoolDetails = () => {
               </div>
             </div>
 
-        <div className="flex flex-col gap-8 w-1/2">
+            <div className="flex flex-col gap-8 md:w-1/2 w-full">
               <div className="bg-white rounded-2xl p-8 w-full shadow-2xl">
-              <div className="flex gap-2 items-center">
-                <i className="ri-book-open-line text-[#0E1C29] text-2xl mt-0.5"></i>
-                <p className="text-2xl text-[#0E1C29] font-semibold">
-                  Overview
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-2 mt-4">
-                <p className="text-xl text-[#0E1C29] font-medium">Curriculum</p>
-                <p className="text-[#0E1C29] font-normal text-sm">
-                  Traditional preschool with Mandarin classes
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-2 mt-4">
-                <p className="text-xl text-[#0E1C29] font-medium">Programs</p>
-                <p className="text-[#0E1C29] font-normal text-sm">
-                  Mandarin classes, PE, Arts and Crafts
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-2 mt-4">
-                <p className="text-xl text-[#0E1C29] font-medium">
-                  Grade Levels
-                </p>
-                <p className="text-[#0E1C29] font-normal text-sm">
-                  Nursery, Pre-Kinder, Kinder
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-2 mt-4">
-                <p className="text-xl text-[#0E1C29] font-medium">
-                  Special Programs
-                </p>
-                <p className="text-[#0E1C29] font-normal text-sm">
-                  Provides specialized programs, including one-on-one
-                  assistance, for students on the autism spectrum
-                </p>
-              </div>
-            </div>
-
-
-                <div className="bg-white rounded-2xl p-8 w-full shadow-2xl">
-              <div className="flex gap-2 items-center">
-                <i className="ri-shield-line text-[#0E1C29] text-2xl mt-0.5"></i>
-                <p className="text-2xl text-[#0E1C29] font-semibold">
-                  School Information
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-2 mt-4">
-                <p className="text-xl text-[#0E1C29] font-medium">After School Care</p>
-                <p className="text-[#0E1C29] font-normal text-sm">
-                  Yes - Extended hours until 5:00 PM
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-2 mt-4">
-                <p className="text-xl text-[#0E1C29] font-medium">Transportation</p>
-                <p className="text-[#0E1C29] font-normal text-sm">
-                  Not Avaliable
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-2 mt-4">
-                <p className="text-xl text-[#0E1C29] font-medium">
-                  Scholarships
-                </p>
-                <p className="text-[#0E1C29] font-normal text-sm">
-                  No
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-2 mt-4">
-                <p className="text-xl text-[#0E1C29] font-medium">
-                  Special Education
-                </p>
-                <p className="text-[#0E1C29] font-normal text-sm">
-                 No
-                </p>
-              </div>
-
-              
-              <div className="flex flex-col gap-2 mt-4">
-                <p className="text-xl text-[#0E1C29] font-medium">
-                  Accreditations
-                </p>
-                <p className="text-[#0E1C29] font-normal text-sm">
-                 DepEd authorized
-                </p>
-              </div>
+                <div className="flex gap-2 items-center">
+                  <i className="ri-book-open-line text-[#0E1C29] text-2xl mt-0.5"></i>
+                  <p className="text-2xl text-[#0E1C29] font-semibold">
+                    Overview
+                  </p>
+                </div>
 
                 <div className="flex flex-col gap-2 mt-4">
-                <p className="text-xl text-[#0E1C29] font-medium">
-                  Admission Requirements
-                </p>
-                <p className="text-[#0E1C29] font-normal text-sm">
-                 Age 3-6 years, registration required
-                </p>
+                  <p className="text-xl text-[#0E1C29] font-medium">
+                    Curriculum
+                  </p>
+                  <p className="text-[#0E1C29] font-normal text-sm">
+                    Traditional preschool with Mandarin classes
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-2 mt-4">
+                  <p className="text-xl text-[#0E1C29] font-medium">Programs</p>
+                  <p className="text-[#0E1C29] font-normal text-sm">
+                    Mandarin classes, PE, Arts and Crafts
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-2 mt-4">
+                  <p className="text-xl text-[#0E1C29] font-medium">
+                    Grade Levels
+                  </p>
+                  <p className="text-[#0E1C29] font-normal text-sm">
+                    Nursery, Pre-Kinder, Kinder
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-2 mt-4">
+                  <p className="text-xl text-[#0E1C29] font-medium">
+                    Special Programs
+                  </p>
+                  <p className="text-[#0E1C29] font-normal text-sm">
+                    Provides specialized programs, including one-on-one
+                    assistance, for students on the autism spectrum
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl p-8 w-full shadow-2xl">
+                <div className="flex gap-2 items-center">
+                  <i className="ri-shield-line text-[#0E1C29] text-2xl mt-0.5"></i>
+                  <p className="text-2xl text-[#0E1C29] font-semibold">
+                    School Information
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-2 mt-4">
+                  <p className="text-xl text-[#0E1C29] font-medium">
+                    After School Care
+                  </p>
+                  <p className="text-[#0E1C29] font-normal text-sm">
+                    Yes - Extended hours until 5:00 PM
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-2 mt-4">
+                  <p className="text-xl text-[#0E1C29] font-medium">
+                    Transportation
+                  </p>
+                  <p className="text-[#0E1C29] font-normal text-sm">
+                    Not Avaliable
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-2 mt-4">
+                  <p className="text-xl text-[#0E1C29] font-medium">
+                    Scholarships
+                  </p>
+                  <p className="text-[#0E1C29] font-normal text-sm">No</p>
+                </div>
+
+                <div className="flex flex-col gap-2 mt-4">
+                  <p className="text-xl text-[#0E1C29] font-medium">
+                    Special Education
+                  </p>
+                  <p className="text-[#0E1C29] font-normal text-sm">No</p>
+                </div>
+
+                <div className="flex flex-col gap-2 mt-4">
+                  <p className="text-xl text-[#0E1C29] font-medium">
+                    Accreditations
+                  </p>
+                  <p className="text-[#0E1C29] font-normal text-sm">
+                    DepEd authorized
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-2 mt-4">
+                  <p className="text-xl text-[#0E1C29] font-medium">
+                    Admission Requirements
+                  </p>
+                  <p className="text-[#0E1C29] font-normal text-sm">
+                    Age 3-6 years, registration required
+                  </p>
+                </div>
               </div>
             </div>
-        </div>
           </div>
         </div>
       </section>

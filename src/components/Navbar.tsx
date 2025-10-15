@@ -1,20 +1,56 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  useEffect(() => {
+    // Check if we're on desktop
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+
+    // Handle scroll event
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      setIsScrolling(scrollY > 40);
+    };
+
+    // Initial check
+    checkDesktop();
+
+    // Add event listeners
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', checkDesktop);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkDesktop);
+    };
+  }, []);
+
   return (
-    <div className="w-full md:bg-white/1 bg-[#774BE5] md:px-10 px-5 py-5 rounded-lg md:rounded-none fixed top-0 left-0 right-0 z-50">
+    <div className={`transition-all duration-500 ease-in-out fixed md:top-0 top-5 md:left-0 left-5 right-0 z-50 md:px-10 px-5 py-5 ${
+      isScrolling && isDesktop 
+        ? 'bg-[#774BE5] w-[780px] rounded-2xl mx-auto md:top-10' 
+        : 'md:w-full w-[90%] md:bg-white/5 bg-[#774BE5] rounded-lg md:rounded-none'
+    }`}>
       <div className="flex items-center justify-between w-full">
         <div className="hidden md:block w-1/3">
+        {isScrolling && isDesktop ? (
+          <Image src="/images/logo-white.png" alt="logo" width={100} height={100} />
+        ) : (
           <Image src="/images/Logo.png" alt="logo" width={100} height={100} />
+        )}
         </div>
         <div className="block md:hidden">
           <Image
@@ -25,7 +61,9 @@ const Navbar = () => {
           />
         </div>
 
-        <ul className="hidden md:flex items-center justify-items-start gap-20 font-semibold text-sm w-2/3">
+        <ul className={`hidden md:flex items-center gap-20 font-semibold text-sm transition-all duration-500 ease-in-out ${
+          isScrolling && isDesktop ? '' : 'justify-items-start w-2/3'
+        }`}>
           <li className="text-white hover:text-[#0E1C29] transition-colors duration-500 ease-in-out delay-100">
             <Link href="/">Home</Link>
           </li>

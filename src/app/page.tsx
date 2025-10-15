@@ -11,10 +11,12 @@ export default function Home() {
   return (
     <>
       <section
-        className="w-full min-h-screen bg-cover bg-center flex flex-col items-center pb-40 p-5 md:pt-0 md:pr-0 md:pl-0"
+        className="w-full min-h-screen bg-cover bg-center flex flex-col items-center pb-40 px-5"
         style={{ backgroundImage: "url('/images/Hero.png')" }}
       >
+        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0">
         <Navbar />
+        </div>
         <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20">
           <h1 className="md:text-7xl text-[32px] font-semibold text-white text-center leading-[120%]">
             Find the Right Preschool for Your Little One{" "}
@@ -82,7 +84,7 @@ export default function Home() {
           <div className="w-fit">
             <Link
               href="/"
-              className="bg-black rounded-[10px] text-white flex items-center gap-2 px-6 py-3"
+              className="bg-black hover:bg-[#774BE5] transition-all duration-500 ease-in-out rounded-[10px] text-white flex items-center gap-2 px-6 py-3"
             >
               <p className="text-base font-medium">View all schools</p>
               <i className="ri-arrow-right-fill text-lg"></i>

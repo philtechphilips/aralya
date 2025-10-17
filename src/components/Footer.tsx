@@ -20,7 +20,7 @@ const Footer = () => {
                     <Link href="/">Contact</Link>
                 </li>
                 <li className='text-[#cfcfcf] font-medium hover:text-[#FFFFFF] transition-colors duration-500 ease-in-out delay-100'>
-                    <Link href="/">Privacy</Link>
+                    <Link href="/privacy-policy">Privacy</Link>
                 </li>
                 <li className='text-[#cfcfcf] font-medium hover:text-[#FFFFFF] transition-colors duration-500 ease-in-out delay-100'>
                     <Link href="/">Terms</Link>

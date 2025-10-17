@@ -7,8 +7,11 @@ const Footer = () => {
     <section className="w-full flex flex-col px-10 py-16 bg-[#774BE5]">
         <div className='w-full flex md:flex-col flex-col-reverse gap-10'>
        <div className='flex items-center justify-between'>
-       <Image src="/images/Logo.png" alt="logo" width={100} height={100} />
-       <i className="ri-instagram-line text-black text-2xl"></i>
+       <Image src="/images/logo-white.png" alt="logo" width={100} height={100} />
+       <div className='flex items-center gap-2'>
+            <i className="ri-instagram-line text-white text-2xl"></i>
+             <i className="ri-facebook-line text-white text-2xl"></i>
+       </div>
        </div>
         
         <div className='flex flex-col'>

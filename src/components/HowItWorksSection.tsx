@@ -25,20 +25,20 @@ const HowItWorksSection = ({ title, description, steps }: HowItWorksSectionProps
       </p>
       <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-2.5 mt-8">
         {steps.map((step, index) => (
-          <div key={index} className="bg-white p-4 rounded-[20px]">
-            <Image
+          <div key={index} className="bg-white p-4 rounded-[20px] flex flex-col items-center">
+            {/* <Image
               src={step.iconSrc}
               width={48}
               height={48}
               alt={step.iconAlt}
-            />
+            /> */}
             <div className="bg-[#EFE8FF] w-10 h-10 rounded-full flex items-center justify-center mb-2.5 mt-5.5">
-              <h6 className="font-semibold text-2xl text-[#774BE5]">{step.stepNumber}</h6>
+              <h6 className="font-semibold text-xl text-[#774BE5]">{step.stepNumber}</h6>
             </div>
-            <p className="text-2xl text-[#0D0D0D] font-semibold">
+            <p className="text-xl text-center text-[#0D0D0D] font-semibold">
               {step.title}
             </p>
-            <p className="text-base text-[#0D0D0D] font-normal mt-2.5">
+            <p className="text-base text-center text-[#0D0D0D] font-normal mt-2.5">
               {step.description}
             </p>
           </div>

@@ -24,7 +24,7 @@ const AboutSection = ({
   imageAlt 
 }: AboutSectionProps) => {
   return (
-    <section className="w-full flex flex-col items-center md:px-10 px-5 py-25 bg-white border-t-1 border-t-[#E5E7EB]">
+    <section className="w-full flex flex-col items-center md:px-10 px-5 py-25 bg-white">
       <h2 className="text-[#0E1C29] md:text-[56px] text-4xl font-normal text-center">
         {title}
       </h2>

@@ -6,6 +6,8 @@ import { schoolsData } from "@/utils/data";
 import React, { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 interface School {
   school_name: string;
@@ -168,8 +170,16 @@ const SchoolDirectoryContent = () => {
     window.location.href = `/directory/${slug}`;
   };
 
-  // Close dropdown when clicking outside
+  // Initialize AOS and handle click outside
   useEffect(() => {
+    // Initialize AOS
+    AOS.init({
+      duration: 500,
+      easing: 'ease-in-out',
+      once: true,
+      offset: 100
+    });
+
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setShowResults(false);
@@ -292,10 +302,19 @@ const SchoolDirectoryContent = () => {
           <Navbar />
         </div>
         <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20 relative z-10">
-          <h1 className="md:text-[56px] text-[32px] font-regular text-white text-center leading-[120%]">
+          <h1 
+            className="md:text-[56px] text-[32px] font-regular text-white text-center leading-[120%]"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
             Find Preschools
           </h1>
-          <form className="bg-white w-full md:rounded-3xl rounded-full mt-6 relative" ref={searchRef}>
+          <form 
+            className="bg-white w-full md:rounded-3xl rounded-full mt-6 relative" 
+            ref={searchRef}
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
             <div className="flex flex-col md:flex-row gap-2.5 rounded-2xl">
               <div className="w-full p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-5 relative">
                 <i className="ri-search-line text-[#0E1C29]/40 text-2xl"></i>
@@ -374,7 +393,11 @@ const SchoolDirectoryContent = () => {
 
       <section className="w-full md:px-10 px-5 py-25 bg-white">
         {searchQuery && (
-          <div className="mb-6">
+          <div 
+            className="mb-6"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
             <h2 className="text-2xl font-semibold text-[#0E1C29] mb-2">
               Search Results for &quot;{searchQuery}&quot;
             </h2>
@@ -384,7 +407,11 @@ const SchoolDirectoryContent = () => {
           </div>
         )}
         
-        <div className="flex items-center gap-2">
+        <div 
+          className="flex items-center gap-2"
+          data-aos="fade-up"
+          data-aos-delay="200"
+        >
           <button
             onClick={() => {
               setActiveFilter('all');
@@ -480,21 +507,31 @@ const SchoolDirectoryContent = () => {
         </div>
         <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-5 mt-11">
           {displayedSchools.map((school, index) => (
-            <SchoolCard
+            <div
               key={`${school.school_name}-${index}`}
-              imageSrc={school.logo_banner}
-              imageAlt={school.school_name}
-              schoolName={school.school_name}
-              location={school.city}
-              tags={school.curriculum_tags.split(", ")}
-              priceRange={`${school.min_tuition} - ${school.max_tuition}`}
-              schoolSlug={createSlug(school.school_name)}
-            />
+              data-aos="fade-up"
+              data-aos-delay={`${300 + (index % 12) * 50}`}
+            >
+              <SchoolCard
+                imageSrc={school.logo_banner}
+                imageAlt={school.school_name}
+                schoolName={school.school_name}
+                location={school.city}
+                tags={school.curriculum_tags.split(", ")}
+                priceRange={`${school.min_tuition} - ${school.max_tuition}`}
+                schoolSlug={createSlug(school.school_name)}
+              />
+            </div>
           ))}
         </div>
         
         {/* Loading indicator and intersection observer */}
-        <div ref={observerRef} className="w-full flex justify-center py-8">
+        <div 
+          ref={observerRef} 
+          className="w-full flex justify-center py-8"
+          data-aos="fade-up"
+          data-aos-delay="100"
+        >
           {isLoading && (
             <div className="flex items-center gap-2">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#774BE5]"></div>

@@ -43,9 +43,9 @@ const Navbar = ({ textColor = 'white' }: NavbarProps) => {
   }, []);
 
   return (
-    <div className={`transition-all duration-500 ease-in-out fixed md:top-0 top-5 md:left-0 left-5 right-0 z-50 md:px-10 px-5 py-5 ${
+    <div className={`transition-all duration-500 ease-in-out fixed md:top-0 top-5 md:left-0 left-5 right-0 z-5000 md:px-10 px-5 py-5 ${
       isScrolling && isDesktop 
-        ? 'bg-[#774BE5] w-[780px] rounded-2xl mx-auto md:top-10' 
+        ? 'bg-[#774BE5] w-[780px] rounded-2xl mx-auto md:top-10 z-5000' 
         : 'md:w-full w-[90%] md:bg-white/5 bg-[#774BE5] rounded-lg md:rounded-none'
     }`}>
       <div className="flex items-center justify-between w-full">

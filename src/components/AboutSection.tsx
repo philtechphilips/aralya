@@ -38,7 +38,7 @@ const AboutSection = ({
           title={featureTitle}
           features={features}
         />
-        <div className="w-full md:w-[45%] rounded-[20px] overflow-hidden">
+        <div className="w-full md:w-[45%] h-100 rounded-[20px] overflow-hidden">
           <Image 
             src={imageSrc} 
             width={400} 

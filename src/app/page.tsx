@@ -12,12 +12,12 @@ export default function Home() {
     <>
       <section
         className="w-full min-h-screen bg-cover bg-center flex flex-col items-center pb-40 px-5"
-        style={{ backgroundImage: "url('/images/Hero.png')" }}
+        style={{ backgroundImage: "url('/images/Hero.jpg')" }}
       >
-        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0">
+        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0 z-20">
         <Navbar />
         </div>
-        <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20">
+        <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20 z-1">
           <h1 className="md:text-7xl text-[32px] font-semibold text-white text-center leading-[120%]">
             Find the Right Preschool for Your Little One{" "}
           </h1>
@@ -46,6 +46,8 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        <div className="w-full h-full absolute bg-black/20 z-0"></div>
       </section>
 
       <section className="w-full md:px-10 px-5 py-25 bg-white">
@@ -113,7 +115,7 @@ export default function Home() {
               "Set your budget, curriculum, and schedule preferences.",
           },
           {
-            iconSrc: "/images/comp.png",
+            iconSrc: "/images/about.jpg",
             iconAlt: "compare",
             stepNumber: 3,
             title: "Compare and contact",
@@ -176,7 +178,7 @@ export default function Home() {
             text: "City pages: BGC, QC, Makati, Pasig, Taguig - and growing",
           },
         ]}
-        imageSrc="/images/Cropped.jpg"
+        imageSrc="/images/about.jpg"
         imageAlt="About Aralya"
       />
 

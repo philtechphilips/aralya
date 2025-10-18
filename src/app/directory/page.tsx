@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import SchoolCard from "@/components/SchoolCard";
+import { schoolsData } from "@/utils/data";
 import Link from "next/link";
 import React from "react";
 
@@ -8,13 +9,14 @@ const SchoolDirectory = () => {
   return (
     <>
       <section
-        className="w-full h-100 bg-cover bg-center flex flex-col items-center pb-40 px-5"
-        style={{ backgroundImage: "url('/images/Hero.png')" }}
+        className="w-full h-fit bg-cover bg-center flex flex-col items-center pb-40 px-5 relative"
+        style={{ backgroundImage: "url('/images/Hero.jpg')" }}
       >
-        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0">
+        <div className="w-full h-full absolute top-0 left-0 bg-black/20 z-0"></div>
+        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0 relative z-10">
           <Navbar />
         </div>
-        <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20">
+        <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20 relative z-10">
           <h1 className="md:text-[56px] text-[32px] font-regular text-white text-center leading-[120%]">
             Find Preschools
           </h1>
@@ -55,32 +57,17 @@ const SchoolDirectory = () => {
           </Link>
         </div>
         <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-5 mt-11">
-          <SchoolCard
-            imageSrc="/images/Angioletto Preschool_logo_enhanced.png"
-            imageAlt="Angioletto"
-            schoolName="Angioletto Preschool"
-            location="Pasig City"
-            tags={["DepEd", "Christian"]}
-            priceRange="₱368,770 - ₱450,000"
-          />
-
-          <SchoolCard
-            imageSrc="/images/Assumption College San Lorenzo_logo_enhanced.png"
-            imageAlt="Assumption College San Lorenzo"
-            schoolName="Assumption College San Lorenzo"
-            location="Makati City"
-            tags={["DepEd", "Christian"]}
-            priceRange="₱148,082 - ₱368,770"
-          />
-
-          <SchoolCard
-            imageSrc="/images/British School Manila_logo.webp"
-            imageAlt="British School Manila"
-            schoolName="British School Manila"
-            location="Taguig City"
-            tags={["British", "IB"]}
-            priceRange="₱161,000 - ₱400,000"
-          />
+          {schoolsData.map((school, index) => (
+            <SchoolCard
+              key={index}
+              imageSrc={school.logo_banner}
+              imageAlt={school.school_name}
+              schoolName={school.school_name}
+              location={school.city}
+              tags={school.curriculum_tags.split(", ")}
+              priceRange={`${school.min_tuition} - ${school.max_tuition}`}
+            />
+          ))}
         </div>
       </section>
 

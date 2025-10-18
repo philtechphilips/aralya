@@ -3,21 +3,49 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import SchoolCard from "@/components/SchoolCard";
 import { schoolsData } from "@/utils/data";
-import Link from "next/link";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
-const SchoolDirectory = () => {
+interface School {
+  school_name: string;
+  min_tuition: string;
+  max_tuition: string;
+  tuition_notes: string;
+  grade_levels_offered: string;
+  class_size_notes: string;
+  curriculum_type: string;
+  class_schedule: string;
+  extra_programs_elective: string;
+  after_school_cares: string;
+  admission_requirements: string;
+  scholarships_discounts: string;
+  special_education_support: string;
+  language_used: string;
+  school_bus_note: string;
+  accreditations_affiliations: string;
+  logo_banner: string;
+  website: string;
+  facebook: string;
+  contact_number: string;
+  email: string;
+  city: string;
+  preschool_levels_offered: string;
+  curriculum_tags: string;
+}
+
+// Component that uses useSearchParams - needs to be wrapped in Suspense
+const SchoolDirectoryContent = () => {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
   
-  const [displayedSchools, setDisplayedSchools] = useState<any[]>([]);
+  const [displayedSchools, setDisplayedSchools] = useState<School[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [filteredSchools, setFilteredSchools] = useState<any[]>([]);
+  const [filteredSchools, setFilteredSchools] = useState<School[]>([]);
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<School[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [activeFilter, setActiveFilter] = useState('all');
   const [budgetFilter, setBudgetFilter] = useState('');
@@ -33,7 +61,7 @@ const SchoolDirectory = () => {
   };
   
   // Helper function to check if a school is in a specific city
-  const isSchoolInCity = (school: any, targetCity: string): boolean => {
+  const isSchoolInCity = (school: School, targetCity: string): boolean => {
     const cities = school.city.split(',').map((city: string) => normalizeCityName(city));
     const normalizedTargetCity = normalizeCityName(targetCity);
     
@@ -135,7 +163,7 @@ const SchoolDirectory = () => {
   };
 
   // Handle clicking on a search result
-  const handleResultClick = (school: any) => {
+  const handleResultClick = (school: School) => {
     const slug = createSlug(school.school_name);
     window.location.href = `/directory/${slug}`;
   };
@@ -160,7 +188,7 @@ const SchoolDirectory = () => {
   }, []);
 
   // Apply filters to schools
-  const applyFilters = (schools: any[]) => {
+  const applyFilters = useCallback((schools: School[]) => {
     let filtered = schools;
 
     // Apply budget filter
@@ -190,14 +218,14 @@ const SchoolDirectory = () => {
     }
 
     return filtered;
-  };
+  }, [budgetFilter, cityFilter]);
 
   // Filter schools based on search query and filters
   useEffect(() => {
     const searchFiltered = searchSchools(searchQuery);
     const finalFiltered = applyFilters(searchFiltered);
     setFilteredSchools(finalFiltered);
-  }, [searchQuery, budgetFilter, cityFilter]);
+  }, [searchQuery, budgetFilter, cityFilter, applyFilters]);
 
   // Load initial schools
   useEffect(() => {
@@ -208,7 +236,7 @@ const SchoolDirectory = () => {
   }, [filteredSchools]);
 
   // Load more schools function
-  const loadMoreSchools = () => {
+  const loadMoreSchools = useCallback(() => {
     if (isLoading || !hasMore) return;
     
     setIsLoading(true);
@@ -228,7 +256,7 @@ const SchoolDirectory = () => {
       
       setIsLoading(false);
     }, 500);
-  };
+  }, [isLoading, hasMore, currentPage, filteredSchools, schoolsPerPage]);
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -241,16 +269,17 @@ const SchoolDirectory = () => {
       { threshold: 0.1 }
     );
 
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
+    const currentObserverRef = observerRef.current;
+    if (currentObserverRef) {
+      observer.observe(currentObserverRef);
     }
 
     return () => {
-      if (observerRef.current) {
-        observer.unobserve(observerRef.current);
+      if (currentObserverRef) {
+        observer.unobserve(currentObserverRef);
       }
     };
-  }, [currentPage, hasMore, isLoading]);
+  }, [currentPage, hasMore, isLoading, loadMoreSchools]);
 
   return (
     <>
@@ -307,9 +336,11 @@ const SchoolDirectory = () => {
                       className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
                     >
                       <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                        <img
+                        <Image
                           src={school.logo_banner}
                           alt={school.school_name}
+                          width={48}
+                          height={48}
                           className="w-full h-full object-contain"
                         />
                       </div>
@@ -345,7 +376,7 @@ const SchoolDirectory = () => {
         {searchQuery && (
           <div className="mb-6">
             <h2 className="text-2xl font-semibold text-[#0E1C29] mb-2">
-              Search Results for "{searchQuery}"
+              Search Results for &quot;{searchQuery}&quot;
             </h2>
             <p className="text-gray-600">
               Found {filteredSchools.length} school{filteredSchools.length !== 1 ? 's' : ''}
@@ -475,6 +506,25 @@ const SchoolDirectory = () => {
 
       <Footer />
     </>
+  );
+};
+
+// Loading component for Suspense fallback
+const DirectoryLoading = () => (
+  <div className="w-full min-h-screen bg-[#F9FAFB] flex items-center justify-center">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#774BE5] mx-auto mb-4"></div>
+      <p className="text-[#0E1C29] font-medium">Loading directory...</p>
+    </div>
+  </div>
+);
+
+// Main component with Suspense boundary
+const SchoolDirectory = () => {
+  return (
+    <Suspense fallback={<DirectoryLoading />}>
+      <SchoolDirectoryContent />
+    </Suspense>
   );
 };
 

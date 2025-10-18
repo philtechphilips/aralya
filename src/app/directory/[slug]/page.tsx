@@ -67,7 +67,7 @@ const SchoolDetails = () => {
               School Not Found
             </h1>
             <p className="text-lg text-gray-600 mb-6">
-              The school you're looking for doesn't exist.
+              The school you&apos;re looking for doesn&apos;t exist.
             </p>
             <Link
               href="/directory"

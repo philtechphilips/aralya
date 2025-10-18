@@ -6,15 +6,42 @@ import AboutSection from "@/components/AboutSection";
 import FAQSection from "@/components/FAQSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import { schoolsData } from "@/utils/data";
-import Image from "next/image";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+
+interface School {
+  school_name: string;
+  min_tuition: string;
+  max_tuition: string;
+  tuition_notes: string;
+  grade_levels_offered: string;
+  class_size_notes: string;
+  curriculum_type: string;
+  class_schedule: string;
+  extra_programs_elective: string;
+  after_school_cares: string;
+  admission_requirements: string;
+  scholarships_discounts: string;
+  special_education_support: string;
+  language_used: string;
+  school_bus_note: string;
+  accreditations_affiliations: string;
+  logo_banner: string;
+  website: string;
+  facebook: string;
+  contact_number: string;
+  email: string;
+  city: string;
+  preschool_levels_offered: string;
+  curriculum_tags: string;
+}
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<School[]>([]);
   const [showResults, setShowResults] = useState(false);
   const router = useRouter();
   const searchRef = useRef<HTMLFormElement>(null);
@@ -137,7 +164,7 @@ export default function Home() {
   };
 
   // Handle clicking on a search result
-  const handleResultClick = (school: any) => {
+  const handleResultClick = (school: School) => {
     const slug = createSlug(school.school_name);
     router.push(`/directory/${slug}`);
   };
@@ -232,9 +259,11 @@ export default function Home() {
                       className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
                     >
                       <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                        <img
+                        <Image
                           src={school.logo_banner}
                           alt={school.school_name}
+                          width={48}
+                          height={48}
                           className="w-full h-full object-contain"
                         />
                       </div>

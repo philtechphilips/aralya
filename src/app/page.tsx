@@ -1,3 +1,5 @@
+"use client";
+
 import Navbar from "@/components/Navbar";
 import SchoolCard from "@/components/SchoolCard";
 import AboutSection from "@/components/AboutSection";
@@ -7,20 +9,155 @@ import { schoolsData } from "@/utils/data";
 import Image from "next/image";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [showResults, setShowResults] = useState(false);
+  const router = useRouter();
+  const searchRef = useRef<HTMLFormElement>(null);
+
   // Get the first 3 schools for the homepage
   const featuredSchools = schoolsData.slice(0, 3);
-  
+
   // Helper function to create URL-friendly slugs
   const createSlug = (schoolName: string) => {
     return schoolName
       .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-      .replace(/\s+/g, '-') // Replace spaces with hyphens
-      .replace(/-+/g, '-') // Replace multiple hyphens with single
+      .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/-+/g, "-") // Replace multiple hyphens with single
       .trim();
   };
+
+  // Enhanced search function
+  const searchSchools = (query: string) => {
+    if (query.trim().length === 0) return [];
+
+    const searchTerm = query.toLowerCase().trim();
+
+    return schoolsData.filter((school) => {
+      // Search by school name
+      const nameMatch = school.school_name.toLowerCase().includes(searchTerm);
+
+      // Search by location/city
+      const locationMatch = school.city.toLowerCase().includes(searchTerm);
+
+      // Search by curriculum tags
+      const curriculumMatch = school.curriculum_tags
+        .toLowerCase()
+        .includes(searchTerm);
+
+      // Search by price range (extract numbers from query)
+      const priceNumbers = searchTerm.match(/\d+/g);
+      let priceMatch = false;
+      if (priceNumbers) {
+        const queryPrice = parseInt(priceNumbers[0]);
+        const minPrice = parseInt(school.min_tuition.replace(/[^\d]/g, ""));
+        const maxPrice = parseInt(school.max_tuition.replace(/[^\d]/g, ""));
+        priceMatch = queryPrice >= minPrice && queryPrice <= maxPrice;
+      }
+
+      // Search by grade levels
+      const gradeMatch =
+        school.preschool_levels_offered.toLowerCase().includes(searchTerm) ||
+        school.grade_levels_offered.toLowerCase().includes(searchTerm);
+
+      // Search by special programs
+      const programMatch =
+        school.extra_programs_elective.toLowerCase().includes(searchTerm) ||
+        school.special_education_support.toLowerCase().includes(searchTerm);
+
+      // Search by language
+      const languageMatch = school.language_used
+        .toLowerCase()
+        .includes(searchTerm);
+
+      // Search by accreditation
+      const accreditationMatch = school.accreditations_affiliations
+        .toLowerCase()
+        .includes(searchTerm);
+
+      // Search by class size
+      const classSizeMatch = school.class_size_notes
+        .toLowerCase()
+        .includes(searchTerm);
+
+      // Search by schedule
+      const scheduleMatch = school.class_schedule
+        .toLowerCase()
+        .includes(searchTerm);
+
+      return (
+        nameMatch ||
+        locationMatch ||
+        curriculumMatch ||
+        priceMatch ||
+        gradeMatch ||
+        programMatch ||
+        languageMatch ||
+        accreditationMatch ||
+        classSizeMatch ||
+        scheduleMatch
+      );
+    });
+  };
+
+  // Handle search input changes
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.trim().length > 0) {
+      // Filter schools based on enhanced search
+      const filtered = searchSchools(query).slice(0, 3); // Get top 3 results
+
+      setSearchResults(filtered);
+      setShowResults(true);
+    } else {
+      setSearchResults([]);
+      setShowResults(false);
+    }
+  };
+
+  // Handle search functionality
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // Redirect to directory with search query
+      router.push(
+        `/directory?search=${encodeURIComponent(searchQuery.trim())}`
+      );
+    } else {
+      // If no search query, go to directory
+      router.push("/directory");
+    }
+  };
+
+  // Handle clicking on a search result
+  const handleResultClick = (school: any) => {
+    const slug = createSlug(school.school_name);
+    router.push(`/directory/${slug}`);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setShowResults(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -29,7 +166,7 @@ export default function Home() {
         style={{ backgroundImage: "url('/images/Hero.jpg')" }}
       >
         <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0 z-20">
-        <Navbar />
+          <Navbar />
         </div>
         <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20 z-1">
           <h1 className="md:text-7xl text-[32px] font-semibold text-white text-center leading-[120%]">
@@ -39,26 +176,84 @@ export default function Home() {
             Easily compare tuition, programs, and nearby locations from trusted
             preschools in Metro Manila — no sign-ups, no stress
           </p>
-          <div className="bg-white w-full p-5 rounded-3xl mt-6">
+          <form
+            onSubmit={handleSearch}
+            className="bg-white w-full p-5 rounded-3xl mt-6 relative"
+            ref={searchRef}
+          >
             <h4 className="text-[#0F0F0F] md:text-2xl text-base font-medium">
-              Serach schools around Philipines
+              Search schools around Philippines
             </h4>
             <div className="flex flex-col md:flex-row md:mt-6 mt-3 gap-2.5 rounded-2xl">
-              <div className="bg-[#f5f5f5] w-full md:w-[710px] cursor-pointer p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-5">
+              <div className="bg-[#f5f5f5] w-full md:w-[710px] p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-5 relative">
                 <i className="ri-search-line text-[#0E1C29]/40 text-2xl"></i>
-                <p className="text-[#999999] text-sm md:text-base">
-                  Search by school name, loc...
-                </p>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  placeholder="Search by name, location, price, curriculum, programs..."
+                  className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
+                />
               </div>
               <Link
-                href="/"
-                className="bg-[#774BE5] md:w-fit w-full text-white p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1"
+                href="/directory"
+                className="bg-[#774BE5] md:w-fit w-full text-white p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 hover:bg-[#6B3FD6] transition-colors"
               >
                 View all schools
                 <i className="ri-arrow-right-fill text-white text-lg mt-0.5"></i>
               </Link>
             </div>
-          </div>
+
+            {/* Search Results Dropdown */}
+            {showResults && searchResults.length > 0 && (
+              <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl shadow-lg border border-gray-200 z-50">
+                <div className="p-4">
+                  <h5 className="text-sm font-semibold text-gray-600 mb-3">
+                    Top {searchResults.length} result
+                    {searchResults.length !== 1 ? "s" : ""}
+                  </h5>
+                  {searchResults.map((school, index) => (
+                    <div
+                      key={`${school.school_name}-${index}`}
+                      onClick={() => handleResultClick(school)}
+                      className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+                    >
+                      <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                        <img
+                          src={school.logo_banner}
+                          alt={school.school_name}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h6 className="font-semibold text-[#0E1C29] text-sm truncate">
+                          {school.school_name}
+                        </h6>
+                        <p className="text-xs text-gray-600 truncate">
+                          {school.city} • {school.min_tuition} -{" "}
+                          {school.max_tuition}
+                        </p>
+                        <div className="flex gap-1 mt-1">
+                          {school.curriculum_tags
+                            .split(", ")
+                            .slice(0, 2)
+                            .map((tag: string, tagIndex: number) => (
+                              <span
+                                key={tagIndex}
+                                className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                        </div>
+                      </div>
+                      <i className="ri-arrow-right-s-line text-gray-400"></i>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </form>
         </div>
 
         <div className="w-full h-full absolute bg-black/20 z-0"></div>

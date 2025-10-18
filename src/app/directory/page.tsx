@@ -5,12 +5,17 @@ import SchoolCard from "@/components/SchoolCard";
 import { schoolsData } from "@/utils/data";
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 
 const SchoolDirectory = () => {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
+  
   const [displayedSchools, setDisplayedSchools] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [filteredSchools, setFilteredSchools] = useState<any[]>([]);
   const observerRef = useRef<HTMLDivElement>(null);
   
   const schoolsPerPage = 6; // Load 6 schools at a time
@@ -25,12 +30,71 @@ const SchoolDirectory = () => {
       .trim();
   };
 
+  // Enhanced search function
+  const searchSchools = (query: string) => {
+    if (query.trim().length === 0) return schoolsData;
+    
+    const searchTerm = query.toLowerCase().trim();
+    
+    return schoolsData.filter(school => {
+      // Search by school name
+      const nameMatch = school.school_name.toLowerCase().includes(searchTerm);
+      
+      // Search by location/city
+      const locationMatch = school.city.toLowerCase().includes(searchTerm);
+      
+      // Search by curriculum tags
+      const curriculumMatch = school.curriculum_tags.toLowerCase().includes(searchTerm);
+      
+      // Search by price range (extract numbers from query)
+      const priceNumbers = searchTerm.match(/\d+/g);
+      let priceMatch = false;
+      if (priceNumbers) {
+        const queryPrice = parseInt(priceNumbers[0]);
+        const minPrice = parseInt(school.min_tuition.replace(/[^\d]/g, ''));
+        const maxPrice = parseInt(school.max_tuition.replace(/[^\d]/g, ''));
+        priceMatch = queryPrice >= minPrice && queryPrice <= maxPrice;
+      }
+      
+      // Search by grade levels
+      const gradeMatch = school.preschool_levels_offered.toLowerCase().includes(searchTerm) ||
+                        school.grade_levels_offered.toLowerCase().includes(searchTerm);
+      
+      // Search by special programs
+      const programMatch = school.extra_programs_elective.toLowerCase().includes(searchTerm) ||
+                          school.special_education_support.toLowerCase().includes(searchTerm);
+      
+      // Search by language
+      const languageMatch = school.language_used.toLowerCase().includes(searchTerm);
+      
+      // Search by accreditation
+      const accreditationMatch = school.accreditations_affiliations.toLowerCase().includes(searchTerm);
+      
+      // Search by class size
+      const classSizeMatch = school.class_size_notes.toLowerCase().includes(searchTerm);
+      
+      // Search by schedule
+      const scheduleMatch = school.class_schedule.toLowerCase().includes(searchTerm);
+      
+      return nameMatch || locationMatch || curriculumMatch || priceMatch || 
+             gradeMatch || programMatch || languageMatch || accreditationMatch || 
+             classSizeMatch || scheduleMatch;
+    });
+  };
+
+  // Filter schools based on search query
+  useEffect(() => {
+    const filtered = searchSchools(searchQuery);
+    setFilteredSchools(filtered);
+  }, [searchQuery]);
+
   // Load initial schools
   useEffect(() => {
-    const initialSchools = schoolsData.slice(0, schoolsPerPage);
+    const initialSchools = filteredSchools.slice(0, schoolsPerPage);
     setDisplayedSchools(initialSchools);
     setCurrentPage(1);
-  }, []);
+    setHasMore(filteredSchools.length > schoolsPerPage);
+  }, [filteredSchools]);
 
   // Load more schools function
   const loadMoreSchools = () => {
@@ -42,7 +106,7 @@ const SchoolDirectory = () => {
     setTimeout(() => {
       const startIndex = currentPage * schoolsPerPage;
       const endIndex = startIndex + schoolsPerPage;
-      const newSchools = schoolsData.slice(startIndex, endIndex);
+      const newSchools = filteredSchools.slice(startIndex, endIndex);
       
       if (newSchools.length === 0) {
         setHasMore(false);
@@ -105,10 +169,25 @@ const SchoolDirectory = () => {
       </section>
 
       <section className="w-full md:px-10 px-5 py-25 bg-white">
+        {searchQuery && (
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold text-[#0E1C29] mb-2">
+              Search Results for "{searchQuery}"
+            </h2>
+            <p className="text-gray-600">
+              Found {filteredSchools.length} school{filteredSchools.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+        )}
+        
         <div className="flex items-center gap-2">
           <Link
-            href="/"
-            className="bg-[#774BE5] min-w-20 text-white p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1"
+            href="/directory"
+            className={`min-w-20 p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 ${
+              !searchQuery 
+                ? 'bg-[#774BE5] text-white' 
+                : 'bg-white text-black hover:bg-gray-50'
+            }`}
           >
             All
           </Link>
@@ -117,7 +196,7 @@ const SchoolDirectory = () => {
             href="/#"
             className="bg-white md:w-fit min-w-20 text-black p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1"
           >
-            Bugdet
+            Budget
           </Link>
 
           <Link

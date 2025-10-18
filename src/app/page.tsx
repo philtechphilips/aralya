@@ -194,6 +194,19 @@ export default function Home() {
                   placeholder="Search by name, location, price, curriculum, programs..."
                   className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
                 />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSearchResults([]);
+                      setShowResults(false);
+                    }}
+                    className="text-[#0E1C29]/40 hover:text-[#0E1C29]/60 transition-colors"
+                  >
+                    <i className="ri-close-line text-xl"></i>
+                  </button>
+                )}
               </div>
               <Link
                 href="/directory"

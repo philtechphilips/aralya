@@ -16,9 +16,13 @@ const SchoolDirectory = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [filteredSchools, setFilteredSchools] = useState<any[]>([]);
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [showResults, setShowResults] = useState(false);
   const observerRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLFormElement>(null);
   
-  const schoolsPerPage = 6; // Load 6 schools at a time
+  const schoolsPerPage = 12; // Load 12 schools at a time
   
   // Helper function to create URL-friendly slugs
   const createSlug = (schoolName: string) => {
@@ -81,6 +85,43 @@ const SchoolDirectory = () => {
              classSizeMatch || scheduleMatch;
     });
   };
+
+  // Handle local search input changes
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setLocalSearchQuery(query);
+    
+    if (query.trim().length > 0) {
+      // Filter schools based on enhanced search
+      const filtered = searchSchools(query).slice(0, 3); // Get top 3 results
+      
+      setSearchResults(filtered);
+      setShowResults(true);
+    } else {
+      setSearchResults([]);
+      setShowResults(false);
+    }
+  };
+
+  // Handle clicking on a search result
+  const handleResultClick = (school: any) => {
+    const slug = createSlug(school.school_name);
+    window.location.href = `/directory/${slug}`;
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowResults(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Filter schools based on search query
   useEffect(() => {
@@ -155,16 +196,78 @@ const SchoolDirectory = () => {
           <h1 className="md:text-[56px] text-[32px] font-regular text-white text-center leading-[120%]">
             Find Preschools
           </h1>
-          <div className="bg-white w-full p-5 md:rounded-3xl rounded-full mt-6">
-            <div className="flex flex-col md:flex-row  gap-2.5 rounded-2xl">
-              <div className="w-full md:w-[710px] cursor-pointer md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-5">
+          <form className="bg-white w-full md:rounded-3xl rounded-full mt-6 relative" ref={searchRef}>
+            <div className="flex flex-col md:flex-row gap-2.5 rounded-2xl">
+              <div className="w-full p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-5 relative">
                 <i className="ri-search-line text-[#0E1C29]/40 text-2xl"></i>
-                <p className="text-[#999999] text-sm md:text-base">
-                  Search by school name, location...
-                </p>
+                <input
+                  type="text"
+                  value={localSearchQuery}
+                  onChange={handleSearchChange}
+                  placeholder="Search by name, location, price, curriculum, programs..."
+                  className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
+                />
+                {localSearchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLocalSearchQuery("");
+                      setSearchResults([]);
+                      setShowResults(false);
+                    }}
+                    className="text-[#0E1C29]/40 hover:text-[#0E1C29]/60 transition-colors"
+                  >
+                    <i className="ri-close-line text-xl"></i>
+                  </button>
+                )}
               </div>
             </div>
-          </div>
+            
+            {/* Search Results Dropdown */}
+            {showResults && searchResults.length > 0 && (
+              <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl shadow-lg border border-gray-200 z-50">
+                <div className="p-4">
+                  <h5 className="text-sm font-semibold text-gray-600 mb-3">
+                    Top {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+                  </h5>
+                  {searchResults.map((school, index) => (
+                    <div
+                      key={`${school.school_name}-${index}`}
+                      onClick={() => handleResultClick(school)}
+                      className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+                    >
+                      <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                        <img
+                          src={school.logo_banner}
+                          alt={school.school_name}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h6 className="font-semibold text-[#0E1C29] text-sm truncate">
+                          {school.school_name}
+                        </h6>
+                        <p className="text-xs text-gray-600 truncate">
+                          {school.city} • {school.min_tuition} - {school.max_tuition}
+                        </p>
+                        <div className="flex gap-1 mt-1">
+                          {school.curriculum_tags.split(", ").slice(0, 2).map((tag: string, tagIndex: number) => (
+                            <span
+                              key={tagIndex}
+                              className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <i className="ri-arrow-right-s-line text-gray-400"></i>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </form>
         </div>
       </section>
 

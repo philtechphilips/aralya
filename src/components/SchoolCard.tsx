@@ -20,13 +20,13 @@ const SchoolCard = ({
 }: SchoolCardProps) => {
   return (
     <div className="bg-[#F9FAFB] rounded-[16px] p-5">
-      <div className="w-full h-[184px] rounded-[10px] overflow-hidden mb-3">
+      <div className="w-full h-50 rounded-[10px] overflow-hidden mb-3">
         <Image
           src={imageSrc}
           alt={imageAlt}
-          width={100}
-          height={100}
-          className="w-full h-full rounded-[10px] object-cover"
+          width={200}
+          height={200}
+          className="w-full h-full rounded-[10px] object-contain"
         />
       </div>
       <h4 className="text-black text-lg font-medium">{schoolName}</h4>

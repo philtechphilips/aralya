@@ -1,11 +1,72 @@
+"use client";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import SchoolCard from "@/components/SchoolCard";
 import { schoolsData } from "@/utils/data";
 import Link from "next/link";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const SchoolDirectory = () => {
+  const [displayedSchools, setDisplayedSchools] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const observerRef = useRef<HTMLDivElement>(null);
+  
+  const schoolsPerPage = 6; // Load 6 schools at a time
+
+  // Load initial schools
+  useEffect(() => {
+    const initialSchools = schoolsData.slice(0, schoolsPerPage);
+    setDisplayedSchools(initialSchools);
+    setCurrentPage(1);
+  }, []);
+
+  // Load more schools function
+  const loadMoreSchools = () => {
+    if (isLoading || !hasMore) return;
+    
+    setIsLoading(true);
+    
+    // Simulate API delay
+    setTimeout(() => {
+      const startIndex = currentPage * schoolsPerPage;
+      const endIndex = startIndex + schoolsPerPage;
+      const newSchools = schoolsData.slice(startIndex, endIndex);
+      
+      if (newSchools.length === 0) {
+        setHasMore(false);
+      } else {
+        setDisplayedSchools(prev => [...prev, ...newSchools]);
+        setCurrentPage(prev => prev + 1);
+      }
+      
+      setIsLoading(false);
+    }, 500);
+  };
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoading) {
+          loadMoreSchools();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observer.unobserve(observerRef.current);
+      }
+    };
+  }, [currentPage, hasMore, isLoading]);
+
   return (
     <>
       <section
@@ -33,7 +94,7 @@ const SchoolDirectory = () => {
         </div>
       </section>
 
-      <section className="w-full md:px-10 px-5 py-25 bg-[#F9FAFB]">
+      <section className="w-full md:px-10 px-5 py-25 bg-white">
         <div className="flex items-center gap-2">
           <Link
             href="/"
@@ -57,9 +118,9 @@ const SchoolDirectory = () => {
           </Link>
         </div>
         <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-5 mt-11">
-          {schoolsData.map((school, index) => (
+          {displayedSchools.map((school, index) => (
             <SchoolCard
-              key={index}
+              key={`${school.school_name}-${index}`}
               imageSrc={school.logo_banner}
               imageAlt={school.school_name}
               schoolName={school.school_name}
@@ -68,6 +129,16 @@ const SchoolDirectory = () => {
               priceRange={`${school.min_tuition} - ${school.max_tuition}`}
             />
           ))}
+        </div>
+        
+        {/* Loading indicator and intersection observer */}
+        <div ref={observerRef} className="w-full flex justify-center py-8">
+          {isLoading && (
+            <div className="flex items-center gap-2">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#774BE5]"></div>
+              <span className="text-[#774BE5] font-medium">Loading more schools...</span>
+            </div>
+          )}
         </div>
       </section>
 

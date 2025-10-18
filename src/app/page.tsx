@@ -157,7 +157,7 @@ export default function Home() {
     if (searchQuery.trim()) {
       // Redirect to directory with search query
       router.push(
-        `/directory?search=${encodeURIComponent(searchQuery.trim())}`
+        `/directory?search=${encodeURIComponent(searchQuery.trim())}`,
       );
     } else {
       // If no search query, go to directory
@@ -176,9 +176,9 @@ export default function Home() {
     // Initialize AOS
     AOS.init({
       duration: 500,
-      easing: 'ease-in-out',
+      easing: "ease-in-out",
       once: true,
-      offset: 100
+      offset: 100,
     });
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -206,14 +206,14 @@ export default function Home() {
           <Navbar />
         </div>
         <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20 z-1">
-          <h1 
+          <h1
             className="md:text-7xl text-[32px] font-semibold text-white text-center leading-[120%]"
             data-aos="fade-up"
             data-aos-delay="100"
           >
             Find the Right Preschool for Your Little One{" "}
           </h1>
-          <p 
+          <p
             className="mt-6 text-white text-sm md:px-50 px-5 text-center"
             data-aos="fade-up"
             data-aos-delay="200"
@@ -322,7 +322,7 @@ export default function Home() {
       </section>
 
       <section className="w-full md:px-10 px-5 py-25 bg-white">
-        <h2 
+        <h2
           className="text-[#0E1C29] md:text-[56px] text-4xl font-normal text-center"
           data-aos="fade-up"
         >
@@ -347,7 +347,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div 
+        <div
           className="mt-11 mb-25 flex items-center justify-center w-full"
           data-aos="fade-up"
           data-aos-delay="700"
@@ -369,29 +369,29 @@ export default function Home() {
           title="How Aralya Works"
           description="Find the right preschool in 3 quick steps"
           steps={[
-          {
-            iconSrc: "/images/map.svg",
-            iconAlt: "map",
-            stepNumber: 1,
-            title: "Choose your city",
-            description: "Start with BGC, QC, Makati, Pasig and more.",
-          },
-          {
-            iconSrc: "/images/filter.svg",
-            iconAlt: "filter",
-            stepNumber: 2,
-            title: "Filter by preferences",
-            description:
-              "Set your budget, curriculum, and schedule preferences.",
-          },
-          {
-            iconSrc: "/images/about.jpg",
-            iconAlt: "compare",
-            stepNumber: 3,
-            title: "Compare and contact",
-            description: "Review schools and contact them directly.",
-          },
-        ]}
+            {
+              iconSrc: "/images/map.svg",
+              iconAlt: "map",
+              stepNumber: 1,
+              title: "Choose your city",
+              description: "Start with BGC, QC, Makati, Pasig and more.",
+            },
+            {
+              iconSrc: "/images/filter.svg",
+              iconAlt: "filter",
+              stepNumber: 2,
+              title: "Filter by preferences",
+              description:
+                "Set your budget, curriculum, and schedule preferences.",
+            },
+            {
+              iconSrc: "/images/about.jpg",
+              iconAlt: "compare",
+              stepNumber: 3,
+              title: "Compare and contact",
+              description: "Review schools and contact them directly.",
+            },
+          ]}
         />
       </div>
 
@@ -400,32 +400,32 @@ export default function Home() {
           title="Questions? Answers!"
           description="Find quick answers to the most common questions about our platform"
           faqs={[
-          {
-            question: "Is Aralya free?",
-            answer: "Yes-free for parents.",
-          },
-          {
-            question: "Do I need to sign up?",
-            answer: "No. No accounts, no forms.",
-          },
-          {
-            question: "How do I contact a school?",
-            answer:
-              "On the school page, tap Call, Text, Message on FB, or Email.",
-          },
-          {
-            question: "What can I filter by?",
-            answer: "City, tuition range, curriculum, and schedule.",
-          },
-          {
-            question: "How accurate are the details?",
-            answer: "We confirm with schools and refresh weekly.",
-          },
-          {
-            question: "Which cities are available now?",
-            answer: "BGC, QC, Makati, Pasig, Taguig-more coming soon.",
-          },
-        ]}
+            {
+              question: "Is Aralya free?",
+              answer: "Yes-free for parents.",
+            },
+            {
+              question: "Do I need to sign up?",
+              answer: "No. No accounts, no forms.",
+            },
+            {
+              question: "How do I contact a school?",
+              answer:
+                "On the school page, tap Call, Text, Message on FB, or Email.",
+            },
+            {
+              question: "What can I filter by?",
+              answer: "City, tuition range, curriculum, and schedule.",
+            },
+            {
+              question: "How accurate are the details?",
+              answer: "We confirm with schools and refresh weekly.",
+            },
+            {
+              question: "Which cities are available now?",
+              answer: "BGC, QC, Makati, Pasig, Taguig-more coming soon.",
+            },
+          ]}
         />
       </div>
 
@@ -435,25 +435,25 @@ export default function Home() {
           description="Aralya helps Filipino parents find preschools fast. Compare schools by city, tuition, curriculum, and schedule, then contact the school in one tap-Call, Text, FB Message, or Email. No sign-up. Free for parents. We verify details with schools and refresh weekly so you can decide with confidence."
           featureTitle="What you'll find"
           features={[
-          {
-            icon: "ri-book-open-line",
-            text: "Clear tuition ranges",
-          },
-          {
-            icon: "ri-book-open-line",
-            text: "Curriculum tags (Montessori, Progressive, Traditional, Reggio)",
-          },
-          {
-            icon: "ri-book-open-line",
-            text: "Schedules (AM/PM/Full-day)",
-          },
-          {
-            icon: "ri-book-open-line",
-            text: "City pages: BGC, QC, Makati, Pasig, Taguig - and growing",
-          },
-        ]}
-        imageSrc="/images/about.jpg"
-        imageAlt="About Aralya"
+            {
+              icon: "ri-book-open-line",
+              text: "Clear tuition ranges",
+            },
+            {
+              icon: "ri-book-open-line",
+              text: "Curriculum tags (Montessori, Progressive, Traditional, Reggio)",
+            },
+            {
+              icon: "ri-book-open-line",
+              text: "Schedules (AM/PM/Full-day)",
+            },
+            {
+              icon: "ri-book-open-line",
+              text: "City pages: BGC, QC, Makati, Pasig, Taguig - and growing",
+            },
+          ]}
+          imageSrc="/images/about.jpg"
+          imageAlt="About Aralya"
         />
       </div>
 
@@ -461,4 +461,3 @@ export default function Home() {
     </>
   );
 }
-

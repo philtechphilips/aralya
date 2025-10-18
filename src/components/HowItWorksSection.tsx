@@ -12,7 +12,11 @@ interface HowItWorksSectionProps {
   steps: StepItem[];
 }
 
-const HowItWorksSection = ({ title, description, steps }: HowItWorksSectionProps) => {
+const HowItWorksSection = ({
+  title,
+  description,
+  steps,
+}: HowItWorksSectionProps) => {
   return (
     <section className="w-full md:px-10 px-5 py-25 bg-[#EFE8FF]">
       <h2 className="text-[#0E1C29] md:text-[56px] text-4xl font-normal text-center">
@@ -23,7 +27,10 @@ const HowItWorksSection = ({ title, description, steps }: HowItWorksSectionProps
       </p>
       <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-2.5 mt-8">
         {steps.map((step, index) => (
-          <div key={index} className="bg-white p-4 rounded-[20px] flex flex-col items-center">
+          <div
+            key={index}
+            className="bg-white p-4 rounded-[20px] flex flex-col items-center"
+          >
             {/* <Image
               src={step.iconSrc}
               width={48}
@@ -31,7 +38,9 @@ const HowItWorksSection = ({ title, description, steps }: HowItWorksSectionProps
               alt={step.iconAlt}
             /> */}
             <div className="bg-[#EFE8FF] w-10 h-10 rounded-full flex items-center justify-center mb-2.5 mt-5.5">
-              <h6 className="font-semibold text-xl text-[#774BE5]">{step.stepNumber}</h6>
+              <h6 className="font-semibold text-xl text-[#774BE5]">
+                {step.stepNumber}
+              </h6>
             </div>
             <p className="text-xl text-center text-[#0D0D0D] font-semibold">
               {step.title}

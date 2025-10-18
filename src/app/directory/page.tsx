@@ -3,7 +3,13 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import SchoolCard from "@/components/SchoolCard";
 import { schoolsData } from "@/utils/data";
-import React, { useState, useEffect, useRef, useCallback, Suspense } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  Suspense,
+} from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import AOS from "aos";
@@ -39,8 +45,8 @@ interface School {
 // Component that uses useSearchParams - needs to be wrapped in Suspense
 const SchoolDirectoryContent = () => {
   const searchParams = useSearchParams();
-  const searchQuery = searchParams.get('search') || '';
-  
+  const searchQuery = searchParams.get("search") || "";
+
   const [displayedSchools, setDisplayedSchools] = useState<School[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,101 +55,132 @@ const SchoolDirectoryContent = () => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [searchResults, setSearchResults] = useState<School[]>([]);
   const [showResults, setShowResults] = useState(false);
-  const [activeFilter, setActiveFilter] = useState('all');
-  const [budgetFilter, setBudgetFilter] = useState('');
-  const [cityFilter, setCityFilter] = useState('');
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [budgetFilter, setBudgetFilter] = useState("");
+  const [cityFilter, setCityFilter] = useState("");
   const observerRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLFormElement>(null);
-  
+
   const schoolsPerPage = 12; // Load 12 schools at a time
-  
+
   // Helper function to normalize city names for better matching
   const normalizeCityName = (cityName: string): string => {
     return cityName.toLowerCase().trim();
   };
-  
+
   // Helper function to check if a school is in a specific city
   const isSchoolInCity = (school: School, targetCity: string): boolean => {
-    const cities = school.city.split(',').map((city: string) => normalizeCityName(city));
+    const cities = school.city
+      .split(",")
+      .map((city: string) => normalizeCityName(city));
     const normalizedTargetCity = normalizeCityName(targetCity);
-    
+
     return cities.some((city: string) => {
       // Direct match
       if (city.includes(normalizedTargetCity)) return true;
-      
+
       // Handle specific city name variations
-      if (normalizedTargetCity === 'pasig' && city.includes('pasig')) return true;
-      if (normalizedTargetCity === 'makati' && city.includes('makati')) return true;
-      if (normalizedTargetCity === 'taguig' && city.includes('taguig')) return true;
-      if (normalizedTargetCity === 'quezon' && city.includes('quezon')) return true;
-      if (normalizedTargetCity === 'san juan' && city.includes('san juan')) return true;
-      if (normalizedTargetCity === 'manila' && city.includes('manila')) return true;
-      if (normalizedTargetCity === 'las pinas' && city.includes('las pinas')) return true;
-      if (normalizedTargetCity === 'angeles' && city.includes('angeles')) return true;
-      
+      if (normalizedTargetCity === "pasig" && city.includes("pasig"))
+        return true;
+      if (normalizedTargetCity === "makati" && city.includes("makati"))
+        return true;
+      if (normalizedTargetCity === "taguig" && city.includes("taguig"))
+        return true;
+      if (normalizedTargetCity === "quezon" && city.includes("quezon"))
+        return true;
+      if (normalizedTargetCity === "san juan" && city.includes("san juan"))
+        return true;
+      if (normalizedTargetCity === "manila" && city.includes("manila"))
+        return true;
+      if (normalizedTargetCity === "las pinas" && city.includes("las pinas"))
+        return true;
+      if (normalizedTargetCity === "angeles" && city.includes("angeles"))
+        return true;
+
       return false;
     });
   };
-  
+
   // Helper function to create URL-friendly slugs
   const createSlug = (schoolName: string) => {
     return schoolName
       .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-      .replace(/\s+/g, '-') // Replace spaces with hyphens
-      .replace(/-+/g, '-') // Replace multiple hyphens with single
+      .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/-+/g, "-") // Replace multiple hyphens with single
       .trim();
   };
 
   // Enhanced search function
   const searchSchools = (query: string) => {
     if (query.trim().length === 0) return schoolsData;
-    
+
     const searchTerm = query.toLowerCase().trim();
-    
-    return schoolsData.filter(school => {
+
+    return schoolsData.filter((school) => {
       // Search by school name
       const nameMatch = school.school_name.toLowerCase().includes(searchTerm);
-      
+
       // Search by location/city
       const locationMatch = school.city.toLowerCase().includes(searchTerm);
-      
+
       // Search by curriculum tags
-      const curriculumMatch = school.curriculum_tags.toLowerCase().includes(searchTerm);
-      
+      const curriculumMatch = school.curriculum_tags
+        .toLowerCase()
+        .includes(searchTerm);
+
       // Search by price range (extract numbers from query)
       const priceNumbers = searchTerm.match(/\d+/g);
       let priceMatch = false;
       if (priceNumbers) {
         const queryPrice = parseInt(priceNumbers[0]);
-        const minPrice = parseInt(school.min_tuition.replace(/[^\d]/g, ''));
-        const maxPrice = parseInt(school.max_tuition.replace(/[^\d]/g, ''));
+        const minPrice = parseInt(school.min_tuition.replace(/[^\d]/g, ""));
+        const maxPrice = parseInt(school.max_tuition.replace(/[^\d]/g, ""));
         priceMatch = queryPrice >= minPrice && queryPrice <= maxPrice;
       }
-      
+
       // Search by grade levels
-      const gradeMatch = school.preschool_levels_offered.toLowerCase().includes(searchTerm) ||
-                        school.grade_levels_offered.toLowerCase().includes(searchTerm);
-      
+      const gradeMatch =
+        school.preschool_levels_offered.toLowerCase().includes(searchTerm) ||
+        school.grade_levels_offered.toLowerCase().includes(searchTerm);
+
       // Search by special programs
-      const programMatch = school.extra_programs_elective.toLowerCase().includes(searchTerm) ||
-                          school.special_education_support.toLowerCase().includes(searchTerm);
-      
+      const programMatch =
+        school.extra_programs_elective.toLowerCase().includes(searchTerm) ||
+        school.special_education_support.toLowerCase().includes(searchTerm);
+
       // Search by language
-      const languageMatch = school.language_used.toLowerCase().includes(searchTerm);
-      
+      const languageMatch = school.language_used
+        .toLowerCase()
+        .includes(searchTerm);
+
       // Search by accreditation
-      const accreditationMatch = school.accreditations_affiliations.toLowerCase().includes(searchTerm);
-      
+      const accreditationMatch = school.accreditations_affiliations
+        .toLowerCase()
+        .includes(searchTerm);
+
       // Search by class size
-      const classSizeMatch = school.class_size_notes.toLowerCase().includes(searchTerm);
-      
+      const classSizeMatch = school.class_size_notes
+        .toLowerCase()
+        .includes(searchTerm);
+
       // Search by schedule
-      const scheduleMatch = school.class_schedule.toLowerCase().includes(searchTerm);
-      
-      return nameMatch || locationMatch || curriculumMatch || priceMatch || 
-             gradeMatch || programMatch || languageMatch || accreditationMatch || 
-             classSizeMatch || scheduleMatch;
+      const scheduleMatch = school.class_schedule
+        .toLowerCase()
+        .includes(searchTerm);
+
+      return (
+        nameMatch ||
+        locationMatch ||
+        curriculumMatch ||
+        priceMatch ||
+        gradeMatch ||
+        programMatch ||
+        languageMatch ||
+        accreditationMatch ||
+        classSizeMatch ||
+        scheduleMatch
+      );
     });
   };
 
@@ -151,11 +188,11 @@ const SchoolDirectoryContent = () => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setLocalSearchQuery(query);
-    
+
     if (query.trim().length > 0) {
       // Filter schools based on enhanced search
       const filtered = searchSchools(query).slice(0, 3); // Get top 3 results
-      
+
       setSearchResults(filtered);
       setShowResults(true);
     } else {
@@ -175,60 +212,70 @@ const SchoolDirectoryContent = () => {
     // Initialize AOS
     AOS.init({
       duration: 500,
-      easing: 'ease-in-out',
+      easing: "ease-in-out",
       once: true,
-      offset: 100
+      offset: 100,
     });
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
         setShowResults(false);
       }
       // Close filter dropdowns when clicking outside
       const target = event.target as Element;
-      if (!target.closest('.filter-dropdown')) {
-        setActiveFilter('all');
+      if (!target.closest(".filter-dropdown")) {
+        setActiveFilter("all");
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   // Apply filters to schools
-  const applyFilters = useCallback((schools: School[]) => {
-    let filtered = schools;
+  const applyFilters = useCallback(
+    (schools: School[]) => {
+      let filtered = schools;
 
-    // Apply budget filter
-    if (budgetFilter) {
-      const budgetRanges = {
-        'under-100k': { min: 0, max: 100000 },
-        '100k-200k': { min: 100000, max: 200000 },
-        '200k-300k': { min: 200000, max: 300000 },
-        '300k-500k': { min: 300000, max: 500000 },
-        'over-500k': { min: 500000, max: Infinity }
-      };
+      // Apply budget filter
+      if (budgetFilter) {
+        const budgetRanges = {
+          "under-100k": { min: 0, max: 100000 },
+          "100k-200k": { min: 100000, max: 200000 },
+          "200k-300k": { min: 200000, max: 300000 },
+          "300k-500k": { min: 300000, max: 500000 },
+          "over-500k": { min: 500000, max: Infinity },
+        };
 
-      const range = budgetRanges[budgetFilter as keyof typeof budgetRanges];
-      if (range) {
-        filtered = filtered.filter(school => {
-          const minPrice = parseInt(school.min_tuition.replace(/[^\d]/g, ''));
-          const maxPrice = parseInt(school.max_tuition.replace(/[^\d]/g, ''));
-          return (minPrice >= range.min && minPrice <= range.max) || 
-                 (maxPrice >= range.min && maxPrice <= range.max);
-        });
+        const range = budgetRanges[budgetFilter as keyof typeof budgetRanges];
+        if (range) {
+          filtered = filtered.filter((school) => {
+            const minPrice = parseInt(school.min_tuition.replace(/[^\d]/g, ""));
+            const maxPrice = parseInt(school.max_tuition.replace(/[^\d]/g, ""));
+            return (
+              (minPrice >= range.min && minPrice <= range.max) ||
+              (maxPrice >= range.min && maxPrice <= range.max)
+            );
+          });
+        }
       }
-    }
 
-    // Apply city filter
-    if (cityFilter) {
-      filtered = filtered.filter(school => isSchoolInCity(school, cityFilter));
-    }
+      // Apply city filter
+      if (cityFilter) {
+        filtered = filtered.filter((school) =>
+          isSchoolInCity(school, cityFilter),
+        );
+      }
 
-    return filtered;
-  }, [budgetFilter, cityFilter]);
+      return filtered;
+    },
+    [budgetFilter, cityFilter],
+  );
 
   // Filter schools based on search query and filters
   useEffect(() => {
@@ -248,22 +295,22 @@ const SchoolDirectoryContent = () => {
   // Load more schools function
   const loadMoreSchools = useCallback(() => {
     if (isLoading || !hasMore) return;
-    
+
     setIsLoading(true);
-    
+
     // Simulate API delay
     setTimeout(() => {
       const startIndex = currentPage * schoolsPerPage;
       const endIndex = startIndex + schoolsPerPage;
       const newSchools = filteredSchools.slice(startIndex, endIndex);
-      
+
       if (newSchools.length === 0) {
         setHasMore(false);
       } else {
-        setDisplayedSchools(prev => [...prev, ...newSchools]);
-        setCurrentPage(prev => prev + 1);
+        setDisplayedSchools((prev) => [...prev, ...newSchools]);
+        setCurrentPage((prev) => prev + 1);
       }
-      
+
       setIsLoading(false);
     }, 500);
   }, [isLoading, hasMore, currentPage, filteredSchools, schoolsPerPage]);
@@ -276,7 +323,7 @@ const SchoolDirectoryContent = () => {
           loadMoreSchools();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     const currentObserverRef = observerRef.current;
@@ -302,15 +349,15 @@ const SchoolDirectoryContent = () => {
           <Navbar />
         </div>
         <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20 relative z-10">
-          <h1 
+          <h1
             className="md:text-[56px] text-[32px] font-regular text-white text-center leading-[120%]"
             data-aos="fade-up"
             data-aos-delay="100"
           >
             Find Preschools
           </h1>
-          <form 
-            className="bg-white w-full md:rounded-3xl rounded-full mt-6 relative" 
+          <form
+            className="bg-white w-full md:rounded-3xl rounded-full mt-6 relative"
             ref={searchRef}
             data-aos="fade-up"
             data-aos-delay="200"
@@ -340,13 +387,14 @@ const SchoolDirectoryContent = () => {
                 )}
               </div>
             </div>
-            
+
             {/* Search Results Dropdown */}
             {showResults && searchResults.length > 0 && (
               <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl shadow-lg border border-gray-200 z-50">
                 <div className="p-4">
                   <h5 className="text-sm font-semibold text-gray-600 mb-3">
-                    Top {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+                    Top {searchResults.length} result
+                    {searchResults.length !== 1 ? "s" : ""}
                   </h5>
                   {searchResults.map((school, index) => (
                     <div
@@ -368,17 +416,21 @@ const SchoolDirectoryContent = () => {
                           {school.school_name}
                         </h6>
                         <p className="text-xs text-gray-600 truncate">
-                          {school.city} • {school.min_tuition} - {school.max_tuition}
+                          {school.city} • {school.min_tuition} -{" "}
+                          {school.max_tuition}
                         </p>
                         <div className="flex gap-1 mt-1">
-                          {school.curriculum_tags.split(", ").slice(0, 2).map((tag: string, tagIndex: number) => (
-                            <span
-                              key={tagIndex}
-                              className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full"
-                            >
-                              {tag}
-                            </span>
-                          ))}
+                          {school.curriculum_tags
+                            .split(", ")
+                            .slice(0, 2)
+                            .map((tag: string, tagIndex: number) => (
+                              <span
+                                key={tagIndex}
+                                className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full"
+                              >
+                                {tag}
+                              </span>
+                            ))}
                         </div>
                       </div>
                       <i className="ri-arrow-right-s-line text-gray-400"></i>
@@ -393,35 +445,32 @@ const SchoolDirectoryContent = () => {
 
       <section className="w-full md:px-10 px-5 py-25 bg-white">
         {searchQuery && (
-          <div 
-            className="mb-6"
-            data-aos="fade-up"
-            data-aos-delay="100"
-          >
+          <div className="mb-6" data-aos="fade-up" data-aos-delay="100">
             <h2 className="text-2xl font-semibold text-[#0E1C29] mb-2">
               Search Results for &quot;{searchQuery}&quot;
             </h2>
             <p className="text-gray-600">
-              Found {filteredSchools.length} school{filteredSchools.length !== 1 ? 's' : ''}
+              Found {filteredSchools.length} school
+              {filteredSchools.length !== 1 ? "s" : ""}
             </p>
           </div>
         )}
-        
-        <div 
+
+        <div
           className="flex items-center gap-2"
           data-aos="fade-up"
           data-aos-delay="200"
         >
           <button
             onClick={() => {
-              setActiveFilter('all');
-              setBudgetFilter('');
-              setCityFilter('');
+              setActiveFilter("all");
+              setBudgetFilter("");
+              setCityFilter("");
             }}
             className={`min-w-20 p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 ${
-              activeFilter === 'all'
-                ? 'bg-[#774BE5] text-white' 
-                : 'bg-white text-black hover:bg-gray-50'
+              activeFilter === "all"
+                ? "bg-[#774BE5] text-white"
+                : "bg-white text-black hover:bg-gray-50"
             }`}
           >
             All
@@ -429,34 +478,40 @@ const SchoolDirectoryContent = () => {
 
           <div className="relative filter-dropdown">
             <button
-              onClick={() => setActiveFilter(activeFilter === 'budget' ? 'all' : 'budget')}
+              onClick={() =>
+                setActiveFilter(activeFilter === "budget" ? "all" : "budget")
+              }
               className={`md:w-fit min-w-20 p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 ${
-                activeFilter === 'budget'
-                  ? 'bg-[#774BE5] text-white' 
-                  : 'bg-white text-black hover:bg-gray-50'
+                activeFilter === "budget"
+                  ? "bg-[#774BE5] text-white"
+                  : "bg-white text-black hover:bg-gray-50"
               }`}
             >
               Budget
               <i className="ri-arrow-down-s-line text-sm"></i>
             </button>
-            
-            {activeFilter === 'budget' && (
+
+            {activeFilter === "budget" && (
               <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 min-w-48">
                 <div className="p-2">
                   {[
-                    { key: 'under-100k', label: 'Under ₱100k' },
-                    { key: '100k-200k', label: '₱100k - ₱200k' },
-                    { key: '200k-300k', label: '₱200k - ₱300k' },
-                    { key: '300k-500k', label: '₱300k - ₱500k' },
-                    { key: 'over-500k', label: 'Over ₱500k' }
+                    { key: "under-100k", label: "Under ₱100k" },
+                    { key: "100k-200k", label: "₱100k - ₱200k" },
+                    { key: "200k-300k", label: "₱200k - ₱300k" },
+                    { key: "300k-500k", label: "₱300k - ₱500k" },
+                    { key: "over-500k", label: "Over ₱500k" },
                   ].map((option) => (
                     <button
                       key={option.key}
                       onClick={() => {
-                        setBudgetFilter(budgetFilter === option.key ? '' : option.key);
+                        setBudgetFilter(
+                          budgetFilter === option.key ? "" : option.key,
+                        );
                       }}
                       className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-gray-50 ${
-                        budgetFilter === option.key ? 'bg-[#774BE5] text-white' : 'text-gray-700'
+                        budgetFilter === option.key
+                          ? "bg-[#774BE5] text-white"
+                          : "text-gray-700"
                       }`}
                     >
                       {option.label}
@@ -469,32 +524,44 @@ const SchoolDirectoryContent = () => {
 
           <div className="relative filter-dropdown">
             <button
-              onClick={() => setActiveFilter(activeFilter === 'city' ? 'all' : 'city')}
+              onClick={() =>
+                setActiveFilter(activeFilter === "city" ? "all" : "city")
+              }
               className={`md:w-fit min-w-20 p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 ${
-                activeFilter === 'city'
-                  ? 'bg-[#774BE5] text-white' 
-                  : 'bg-white text-black hover:bg-gray-50'
+                activeFilter === "city"
+                  ? "bg-[#774BE5] text-white"
+                  : "bg-white text-black hover:bg-gray-50"
               }`}
             >
               City
               <i className="ri-arrow-down-s-line text-sm"></i>
             </button>
-            
-            {activeFilter === 'city' && (
+
+            {activeFilter === "city" && (
               <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 min-w-48">
                 <div className="p-2">
                   {[
-                    'Angeles City', 'Las Pinas City', 'Laguna', 'Makati City', 
-                    'Mandaluyong', 'Manila City', 'Pasay', 'Pasig City', 
-                    'Quezon City', 'San Juan City', 'Taguig City'
+                    "Angeles City",
+                    "Las Pinas City",
+                    "Laguna",
+                    "Makati City",
+                    "Mandaluyong",
+                    "Manila City",
+                    "Pasay",
+                    "Pasig City",
+                    "Quezon City",
+                    "San Juan City",
+                    "Taguig City",
                   ].map((city) => (
                     <button
                       key={city}
                       onClick={() => {
-                        setCityFilter(cityFilter === city ? '' : city);
+                        setCityFilter(cityFilter === city ? "" : city);
                       }}
                       className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-gray-50 ${
-                        cityFilter === city ? 'bg-[#774BE5] text-white' : 'text-gray-700'
+                        cityFilter === city
+                          ? "bg-[#774BE5] text-white"
+                          : "text-gray-700"
                       }`}
                     >
                       {city}
@@ -524,10 +591,10 @@ const SchoolDirectoryContent = () => {
             </div>
           ))}
         </div>
-        
+
         {/* Loading indicator and intersection observer */}
-        <div 
-          ref={observerRef} 
+        <div
+          ref={observerRef}
           className="w-full flex justify-center py-8"
           data-aos="fade-up"
           data-aos-delay="100"
@@ -535,7 +602,9 @@ const SchoolDirectoryContent = () => {
           {isLoading && (
             <div className="flex items-center gap-2">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#774BE5]"></div>
-              <span className="text-[#774BE5] font-medium">Loading more schools...</span>
+              <span className="text-[#774BE5] font-medium">
+                Loading more schools...
+              </span>
             </div>
           )}
         </div>

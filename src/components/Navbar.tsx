@@ -4,10 +4,10 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 
 interface NavbarProps {
-  textColor?: 'white' | 'black';
+  textColor?: "white" | "black";
 }
 
-const Navbar = ({ textColor = 'white' }: NavbarProps) => {
+const Navbar = ({ textColor = "white" }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -32,29 +32,36 @@ const Navbar = ({ textColor = 'white' }: NavbarProps) => {
     checkDesktop();
 
     // Add event listeners
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', checkDesktop);
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", checkDesktop);
 
     // Cleanup
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', checkDesktop);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", checkDesktop);
     };
   }, []);
 
   return (
-    <div className={`transition-all duration-500 ease-in-out fixed md:top-0 top-5 md:left-0 left-5 right-0 z-5000 md:px-10 px-5 py-5 ${
-      isScrolling && isDesktop 
-        ? 'bg-[#774BE5] w-[780px] rounded-2xl mx-auto md:top-10 z-5000' 
-        : 'md:w-full w-[90%] md:bg-white/5 bg-[#774BE5] rounded-lg md:rounded-none'
-    }`}>
+    <div
+      className={`transition-all duration-500 ease-in-out fixed md:top-0 top-5 md:left-0 left-5 right-0 z-5000 md:px-10 px-5 py-5 ${
+        isScrolling && isDesktop
+          ? "bg-[#774BE5] w-[780px] rounded-2xl mx-auto md:top-10 z-5000"
+          : "md:w-full w-[90%] md:bg-white/5 bg-[#774BE5] rounded-lg md:rounded-none"
+      }`}
+    >
       <div className="flex items-center justify-between w-full">
         <div className="hidden md:block w-1/3">
-        {isScrolling && isDesktop ? (
-          <Image src="/images/logo-white.png" alt="logo" width={100} height={100} />
-        ) : (
-          <Image src="/images/Logo.png" alt="logo" width={100} height={100} />
-        )}
+          {isScrolling && isDesktop ? (
+            <Image
+              src="/images/logo-white.png"
+              alt="logo"
+              width={100}
+              height={100}
+            />
+          ) : (
+            <Image src="/images/Logo.png" alt="logo" width={100} height={100} />
+          )}
         </div>
         <div className="block md:hidden">
           <Image
@@ -65,51 +72,59 @@ const Navbar = ({ textColor = 'white' }: NavbarProps) => {
           />
         </div>
 
-        <ul className={`hidden md:flex items-center gap-20 font-semibold text-sm transition-all duration-500 ease-in-out ${
-          isScrolling && isDesktop ? '' : 'justify-items-start w-2/3'
-        }`}>
-          <li className={`transition-colors duration-500 ease-in-out delay-100 ${
-            isScrolling && isDesktop 
-              ? 'text-white hover:text-[#0E1C29]' 
-              : `text-${textColor} hover:text-[#774BE5]`
-          }`}>
+        <ul
+          className={`hidden md:flex items-center gap-20 font-semibold text-sm transition-all duration-500 ease-in-out ${
+            isScrolling && isDesktop ? "" : "justify-items-start w-2/3"
+          }`}
+        >
+          <li
+            className={`transition-colors duration-500 ease-in-out delay-100 ${
+              isScrolling && isDesktop
+                ? "text-white hover:text-[#0E1C29]"
+                : `text-${textColor} hover:text-[#774BE5]`
+            }`}
+          >
             <Link href="/">Home</Link>
           </li>
-          <li className={`transition-colors duration-500 ease-in-out delay-100 ${
-            isScrolling && isDesktop 
-              ? 'text-white hover:text-[#0E1C29]' 
-              : `text-${textColor} hover:text-[#774BE5]`
-          }`}>
+          <li
+            className={`transition-colors duration-500 ease-in-out delay-100 ${
+              isScrolling && isDesktop
+                ? "text-white hover:text-[#0E1C29]"
+                : `text-${textColor} hover:text-[#774BE5]`
+            }`}
+          >
             <Link href="/directory">Browse</Link>
           </li>
-          <li className={`transition-colors duration-500 ease-in-out delay-100 ${
-            isScrolling && isDesktop 
-              ? 'text-white hover:text-[#0E1C29]' 
-              : `text-${textColor} hover:text-[#774BE5]`
-          }`}>
+          <li
+            className={`transition-colors duration-500 ease-in-out delay-100 ${
+              isScrolling && isDesktop
+                ? "text-white hover:text-[#0E1C29]"
+                : `text-${textColor} hover:text-[#774BE5]`
+            }`}
+          >
             <Link href="/contact">Contact</Link>
           </li>
         </ul>
 
-        <button 
+        <button
           onClick={toggleMenu}
           className="block md:hidden focus:outline-none"
           aria-label="Toggle menu"
         >
           <div className="w-8 h-8 flex flex-col justify-center items-center relative">
-            <div 
+            <div
               className={`w-8 h-0.5 bg-white transition-all duration-300 ease-in-out absolute ${
-                isMenuOpen ? 'rotate-45' : 'rotate-0 -translate-y-2'
+                isMenuOpen ? "rotate-45" : "rotate-0 -translate-y-2"
               }`}
             ></div>
-            <div 
+            <div
               className={`w-8 h-0.5 bg-white transition-all duration-300 ease-in-out ${
-                isMenuOpen ? 'opacity-0' : 'opacity-100'
+                isMenuOpen ? "opacity-0" : "opacity-100"
               }`}
             ></div>
-            <div 
+            <div
               className={`w-8 h-0.5 bg-white transition-all duration-300 ease-in-out absolute ${
-                isMenuOpen ? '-rotate-45' : 'rotate-0 translate-y-2'
+                isMenuOpen ? "-rotate-45" : "rotate-0 translate-y-2"
               }`}
             ></div>
           </div>
@@ -117,21 +132,27 @@ const Navbar = ({ textColor = 'white' }: NavbarProps) => {
       </div>
 
       {/* Mobile Menu */}
-      <div 
+      <div
         className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${
-          isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div className="px-5 my-12">
           <ul className="flex flex-col gap-10 font-semibold text-sm w-full">
             <li className="text-white hover:text-[#0E1C29] transition-colors duration-500 ease-in-out delay-100">
-              <Link href="/" onClick={() => setIsMenuOpen(false)}>Home</Link>
+              <Link href="/" onClick={() => setIsMenuOpen(false)}>
+                Home
+              </Link>
             </li>
             <li className="text-white hover:text-[#0E1C29] transition-colors duration-500 ease-in-out delay-100">
-              <Link href="/about" onClick={() => setIsMenuOpen(false)}>About</Link>
+              <Link href="/about" onClick={() => setIsMenuOpen(false)}>
+                About
+              </Link>
             </li>
             <li className="text-white hover:text-[#0E1C29] transition-colors duration-500 ease-in-out delay-100">
-              <Link href="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+              <Link href="/contact" onClick={() => setIsMenuOpen(false)}>
+                Contact
+              </Link>
             </li>
           </ul>
         </div>

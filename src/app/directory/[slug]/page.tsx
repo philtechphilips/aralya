@@ -24,7 +24,7 @@ const SchoolDetails = () => {
     }) || null;
 
   const [coords, setCoords] = useState<{ lat: string; lon: string } | null>(
-    null
+    null,
   );
 
   // Fetch city coordinates from OpenStreetMap
@@ -35,8 +35,8 @@ const SchoolDetails = () => {
       try {
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-            school?.city ?? "philippines"
-          )}`
+            school?.city ?? "philippines",
+          )}`,
         );
         const data = await res.json();
         if (data.length > 0) {
@@ -310,4 +310,3 @@ const SchoolDetails = () => {
 };
 
 export default SchoolDetails;
-

@@ -15,13 +15,13 @@ interface AboutSectionProps {
   imageAlt: string;
 }
 
-const AboutSection = ({ 
-  title, 
-  description, 
-  featureTitle, 
-  features, 
-  imageSrc, 
-  imageAlt 
+const AboutSection = ({
+  title,
+  description,
+  featureTitle,
+  features,
+  imageSrc,
+  imageAlt,
 }: AboutSectionProps) => {
   return (
     <section className="w-full flex flex-col items-center md:px-10 px-5 py-25 bg-white">
@@ -34,16 +34,13 @@ const AboutSection = ({
         </p>
       </div>
       <div className="w-full flex md:flex-row flex-col items-center gap-5 mt-12">
-        <FeatureList
-          title={featureTitle}
-          features={features}
-        />
+        <FeatureList title={featureTitle} features={features} />
         <div className="w-full md:w-[45%] h-100 rounded-[20px] overflow-hidden">
-          <Image 
-            src={imageSrc} 
-            width={400} 
-            height={360} 
-            alt={imageAlt} 
+          <Image
+            src={imageSrc}
+            width={400}
+            height={360}
+            alt={imageAlt}
             className="w-full h-full rounded-[20px] object-cover"
           />
         </div>

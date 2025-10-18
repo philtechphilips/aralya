@@ -12,7 +12,9 @@ const Contact = () => {
         </div>
 
         <div className="pt-13 flex flex-col items-center md:w-[930px]  w-full px-0 md:px-0 mt-20">
-          <h3 className="md:text-[56px] text-4xl text-[#0E1C29] text-center">Contact Aralya </h3>
+          <h3 className="md:text-[56px] text-4xl text-[#0E1C29] text-center">
+            Contact Aralya{" "}
+          </h3>
 
           <div className="w-full flex flex-col items-center bg-white mt-8 p-8 rounded-2xl">
             <div className="flex w-fit p-1 justify-center mb-4 bg-[#F6FBFF] shadow rounded">
@@ -43,4 +45,3 @@ const Contact = () => {
 };
 
 export default Contact;
-

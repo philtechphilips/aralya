@@ -19,10 +19,41 @@ const SchoolDirectory = () => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [budgetFilter, setBudgetFilter] = useState('');
+  const [cityFilter, setCityFilter] = useState('');
   const observerRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLFormElement>(null);
   
   const schoolsPerPage = 12; // Load 12 schools at a time
+  
+  // Helper function to normalize city names for better matching
+  const normalizeCityName = (cityName: string): string => {
+    return cityName.toLowerCase().trim();
+  };
+  
+  // Helper function to check if a school is in a specific city
+  const isSchoolInCity = (school: any, targetCity: string): boolean => {
+    const cities = school.city.split(',').map((city: string) => normalizeCityName(city));
+    const normalizedTargetCity = normalizeCityName(targetCity);
+    
+    return cities.some((city: string) => {
+      // Direct match
+      if (city.includes(normalizedTargetCity)) return true;
+      
+      // Handle specific city name variations
+      if (normalizedTargetCity === 'pasig' && city.includes('pasig')) return true;
+      if (normalizedTargetCity === 'makati' && city.includes('makati')) return true;
+      if (normalizedTargetCity === 'taguig' && city.includes('taguig')) return true;
+      if (normalizedTargetCity === 'quezon' && city.includes('quezon')) return true;
+      if (normalizedTargetCity === 'san juan' && city.includes('san juan')) return true;
+      if (normalizedTargetCity === 'manila' && city.includes('manila')) return true;
+      if (normalizedTargetCity === 'las pinas' && city.includes('las pinas')) return true;
+      if (normalizedTargetCity === 'angeles' && city.includes('angeles')) return true;
+      
+      return false;
+    });
+  };
   
   // Helper function to create URL-friendly slugs
   const createSlug = (schoolName: string) => {
@@ -115,6 +146,11 @@ const SchoolDirectory = () => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setShowResults(false);
       }
+      // Close filter dropdowns when clicking outside
+      const target = event.target as Element;
+      if (!target.closest('.filter-dropdown')) {
+        setActiveFilter('all');
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -123,11 +159,45 @@ const SchoolDirectory = () => {
     };
   }, []);
 
-  // Filter schools based on search query
+  // Apply filters to schools
+  const applyFilters = (schools: any[]) => {
+    let filtered = schools;
+
+    // Apply budget filter
+    if (budgetFilter) {
+      const budgetRanges = {
+        'under-100k': { min: 0, max: 100000 },
+        '100k-200k': { min: 100000, max: 200000 },
+        '200k-300k': { min: 200000, max: 300000 },
+        '300k-500k': { min: 300000, max: 500000 },
+        'over-500k': { min: 500000, max: Infinity }
+      };
+
+      const range = budgetRanges[budgetFilter as keyof typeof budgetRanges];
+      if (range) {
+        filtered = filtered.filter(school => {
+          const minPrice = parseInt(school.min_tuition.replace(/[^\d]/g, ''));
+          const maxPrice = parseInt(school.max_tuition.replace(/[^\d]/g, ''));
+          return (minPrice >= range.min && minPrice <= range.max) || 
+                 (maxPrice >= range.min && maxPrice <= range.max);
+        });
+      }
+    }
+
+    // Apply city filter
+    if (cityFilter) {
+      filtered = filtered.filter(school => isSchoolInCity(school, cityFilter));
+    }
+
+    return filtered;
+  };
+
+  // Filter schools based on search query and filters
   useEffect(() => {
-    const filtered = searchSchools(searchQuery);
-    setFilteredSchools(filtered);
-  }, [searchQuery]);
+    const searchFiltered = searchSchools(searchQuery);
+    const finalFiltered = applyFilters(searchFiltered);
+    setFilteredSchools(finalFiltered);
+  }, [searchQuery, budgetFilter, cityFilter]);
 
   // Load initial schools
   useEffect(() => {
@@ -284,30 +354,98 @@ const SchoolDirectory = () => {
         )}
         
         <div className="flex items-center gap-2">
-          <Link
-            href="/directory"
+          <button
+            onClick={() => {
+              setActiveFilter('all');
+              setBudgetFilter('');
+              setCityFilter('');
+            }}
             className={`min-w-20 p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 ${
-              !searchQuery 
+              activeFilter === 'all'
                 ? 'bg-[#774BE5] text-white' 
                 : 'bg-white text-black hover:bg-gray-50'
             }`}
           >
             All
-          </Link>
+          </button>
 
-          <Link
-            href="/#"
-            className="bg-white md:w-fit min-w-20 text-black p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1"
-          >
-            Budget
-          </Link>
+          <div className="relative filter-dropdown">
+            <button
+              onClick={() => setActiveFilter(activeFilter === 'budget' ? 'all' : 'budget')}
+              className={`md:w-fit min-w-20 p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 ${
+                activeFilter === 'budget'
+                  ? 'bg-[#774BE5] text-white' 
+                  : 'bg-white text-black hover:bg-gray-50'
+              }`}
+            >
+              Budget
+              <i className="ri-arrow-down-s-line text-sm"></i>
+            </button>
+            
+            {activeFilter === 'budget' && (
+              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 min-w-48">
+                <div className="p-2">
+                  {[
+                    { key: 'under-100k', label: 'Under ₱100k' },
+                    { key: '100k-200k', label: '₱100k - ₱200k' },
+                    { key: '200k-300k', label: '₱200k - ₱300k' },
+                    { key: '300k-500k', label: '₱300k - ₱500k' },
+                    { key: 'over-500k', label: 'Over ₱500k' }
+                  ].map((option) => (
+                    <button
+                      key={option.key}
+                      onClick={() => {
+                        setBudgetFilter(budgetFilter === option.key ? '' : option.key);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-gray-50 ${
+                        budgetFilter === option.key ? 'bg-[#774BE5] text-white' : 'text-gray-700'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
-          <Link
-            href="/#"
-            className="bg-white md:w-fit min-w-20 text-black p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1"
-          >
-            City
-          </Link>
+          <div className="relative filter-dropdown">
+            <button
+              onClick={() => setActiveFilter(activeFilter === 'city' ? 'all' : 'city')}
+              className={`md:w-fit min-w-20 p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 ${
+                activeFilter === 'city'
+                  ? 'bg-[#774BE5] text-white' 
+                  : 'bg-white text-black hover:bg-gray-50'
+              }`}
+            >
+              City
+              <i className="ri-arrow-down-s-line text-sm"></i>
+            </button>
+            
+            {activeFilter === 'city' && (
+              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 min-w-48">
+                <div className="p-2">
+                  {[
+                    'Angeles City', 'Las Pinas City', 'Laguna', 'Makati City', 
+                    'Mandaluyong', 'Manila City', 'Pasay', 'Pasig City', 
+                    'Quezon City', 'San Juan City', 'Taguig City'
+                  ].map((city) => (
+                    <button
+                      key={city}
+                      onClick={() => {
+                        setCityFilter(cityFilter === city ? '' : city);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-gray-50 ${
+                        cityFilter === city ? 'bg-[#774BE5] text-white' : 'text-gray-700'
+                      }`}
+                    >
+                      {city}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-5 mt-11">
           {displayedSchools.map((school, index) => (

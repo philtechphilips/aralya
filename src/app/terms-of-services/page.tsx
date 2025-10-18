@@ -1,6 +1,5 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import Link from "next/link";
 import React from "react";
 
 const TermsOfServices = () => {
@@ -20,7 +19,7 @@ const TermsOfServices = () => {
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
           <p className="text-[#0E1C29] font-semibold">
-          Welcome to Alter ("we" or "us"). This Terms Of Services is designed to help you understand how we collect, use, disclose, and safeguard your personal information when you use our website and related services.
+          Welcome to Alter (&quot;we&quot; or &quot;us&quot;). This Terms Of Services is designed to help you understand how we collect, use, disclose, and safeguard your personal information when you use our website and related services.
           </p>
 
           <ul className="list-decimal list-inside mt-4 flex flex-col gap-6">
@@ -38,7 +37,7 @@ const TermsOfServices = () => {
             </li>
             <li className="text-[#0E1C29] font-semibold">Your Choices</li>
             <li className="text-[#0E1C29] font-semibold">Security</li>
-            <li className="text-[#0E1C29] font-semibold">Children's Privacy</li>
+            <li className="text-[#0E1C29] font-semibold">Children&apos;s Privacy</li>
             <li className="text-[#0E1C29] font-semibold">
               Changes to This Privacy Policy
             </li>
@@ -146,7 +145,7 @@ const TermsOfServices = () => {
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
           <p className="text-[#0E1C29] font-semibold mb-6">
-            7. Children's Privacy
+            7. Children&apos;s Privacy
           </p>
 
           <p className="text-[#0E1C29] font-semibold mb-6">

@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 interface StepItem {
   iconSrc: string;
   iconAlt: string;

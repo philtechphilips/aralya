@@ -3,11 +3,25 @@ import SchoolCard from "@/components/SchoolCard";
 import AboutSection from "@/components/AboutSection";
 import FAQSection from "@/components/FAQSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
+import { schoolsData } from "@/utils/data";
 import Image from "next/image";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 
 export default function Home() {
+  // Get the first 3 schools for the homepage
+  const featuredSchools = schoolsData.slice(0, 3);
+  
+  // Helper function to create URL-friendly slugs
+  const createSlug = (schoolName: string) => {
+    return schoolName
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Replace multiple hyphens with single
+      .trim();
+  };
+
   return (
     <>
       <section
@@ -55,37 +69,23 @@ export default function Home() {
           Explore Preschools
         </h2>
         <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-5 mt-11">
-          <SchoolCard
-            imageSrc="/images/Angioletto Preschool_logo_enhanced.png"
-            imageAlt="Angioletto"
-            schoolName="Angioletto Preschool"
-            location="Pasig City"
-            tags={["DepEd", "Christian"]}
-            priceRange="₱368,770 - ₱450,000"
-          />
-
-          <SchoolCard
-            imageSrc="/images/Assumption College San Lorenzo_logo_enhanced.png"
-            imageAlt="Assumption College San Lorenzo"
-            schoolName="Assumption College San Lorenzo"
-            location="Makati City"
-            tags={["DepEd", "Christian"]}
-            priceRange="₱148,082 - ₱368,770"
-          />
-
-          <SchoolCard
-            imageSrc="/images/British School Manila_logo.webp"
-            imageAlt="British School Manila"
-            schoolName="British School Manila"
-            location="Taguig City"
-            tags={["British", "IB"]}
-            priceRange="₱161,000 - ₱400,000"
-          />
+          {featuredSchools.map((school, index) => (
+            <SchoolCard
+              key={`${school.school_name}-${index}`}
+              imageSrc={school.logo_banner}
+              imageAlt={school.school_name}
+              schoolName={school.school_name}
+              location={school.city}
+              tags={school.curriculum_tags.split(", ")}
+              priceRange={`${school.min_tuition} - ${school.max_tuition}`}
+              schoolSlug={createSlug(school.school_name)}
+            />
+          ))}
         </div>
         <div className="mt-11 mb-25 flex items-center justify-center w-full">
           <div className="w-fit">
             <Link
-              href="/"
+              href="/directory"
               className="bg-black hover:bg-[#774BE5] transition-all duration-500 ease-in-out rounded-[10px] text-white flex items-center gap-2 px-6 py-3"
             >
               <p className="text-base font-medium">View all schools</p>

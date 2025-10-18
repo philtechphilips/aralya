@@ -14,6 +14,16 @@ const SchoolDirectory = () => {
   const observerRef = useRef<HTMLDivElement>(null);
   
   const schoolsPerPage = 6; // Load 6 schools at a time
+  
+  // Helper function to create URL-friendly slugs
+  const createSlug = (schoolName: string) => {
+    return schoolName
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Replace multiple hyphens with single
+      .trim();
+  };
 
   // Load initial schools
   useEffect(() => {
@@ -127,6 +137,7 @@ const SchoolDirectory = () => {
               location={school.city}
               tags={school.curriculum_tags.split(", ")}
               priceRange={`${school.min_tuition} - ${school.max_tuition}`}
+              schoolSlug={createSlug(school.school_name)}
             />
           ))}
         </div>

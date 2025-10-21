@@ -2,10 +2,12 @@
 
 import Navbar from "@/components/Navbar";
 import SchoolCard from "@/components/SchoolCard";
+import { SchoolCardSkeleton } from "@/components/SchoolCardSkeleton";
 import AboutSection from "@/components/AboutSection";
 import FAQSection from "@/components/FAQSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
-import { schoolsData } from "@/utils/data";
+import { SchoolService } from "@/lib/schoolService";
+import { School } from "@/lib/supabase";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import { useState, useRef, useEffect } from "react";
@@ -14,42 +16,33 @@ import Image from "next/image";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-interface School {
-  school_name: string;
-  min_tuition: string;
-  max_tuition: string;
-  tuition_notes: string;
-  grade_levels_offered: string;
-  class_size_notes: string;
-  curriculum_type: string;
-  class_schedule: string;
-  extra_programs_elective: string;
-  after_school_cares: string;
-  admission_requirements: string;
-  scholarships_discounts: string;
-  special_education_support: string;
-  language_used: string;
-  school_bus_note: string;
-  accreditations_affiliations: string;
-  logo_banner: string;
-  website: string;
-  facebook: string;
-  contact_number: string;
-  email: string;
-  city: string;
-  preschool_levels_offered: string;
-  curriculum_tags: string;
-}
-
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<School[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [featuredSchools, setFeaturedSchools] = useState<School[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
   const router = useRouter();
   const searchRef = useRef<HTMLFormElement>(null);
 
-  // Get the first 3 schools for the homepage
-  const featuredSchools = schoolsData.slice(0, 3);
+  // Load featured schools on component mount
+  useEffect(() => {
+    const loadFeaturedSchools = async () => {
+      try {
+        const schools = await SchoolService.getFeaturedSchools();
+        setFeaturedSchools(schools);
+      } catch (error) {
+        console.error('Error loading featured schools:', error);
+        // Fallback to empty array or show error message
+        setFeaturedSchools([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFeaturedSchools();
+  }, []);
 
   // Helper function to create URL-friendly slugs
   const createSlug = (schoolName: string) => {
@@ -61,93 +54,35 @@ export default function Home() {
       .trim();
   };
 
-  // Enhanced search function
-  const searchSchools = (query: string) => {
+  // Enhanced search function using Supabase
+  const searchSchools = async (query: string) => {
     if (query.trim().length === 0) return [];
 
-    const searchTerm = query.toLowerCase().trim();
-
-    return schoolsData.filter((school) => {
-      // Search by school name
-      const nameMatch = school.school_name.toLowerCase().includes(searchTerm);
-
-      // Search by location/city
-      const locationMatch = school.city.toLowerCase().includes(searchTerm);
-
-      // Search by curriculum tags
-      const curriculumMatch = school.curriculum_tags
-        .toLowerCase()
-        .includes(searchTerm);
-
-      // Search by price range (extract numbers from query)
-      const priceNumbers = searchTerm.match(/\d+/g);
-      let priceMatch = false;
-      if (priceNumbers) {
-        const queryPrice = parseInt(priceNumbers[0]);
-        const minPrice = parseInt(school.min_tuition.replace(/[^\d]/g, ""));
-        const maxPrice = parseInt(school.max_tuition.replace(/[^\d]/g, ""));
-        priceMatch = queryPrice >= minPrice && queryPrice <= maxPrice;
-      }
-
-      // Search by grade levels
-      const gradeMatch =
-        school.preschool_levels_offered.toLowerCase().includes(searchTerm) ||
-        school.grade_levels_offered.toLowerCase().includes(searchTerm);
-
-      // Search by special programs
-      const programMatch =
-        school.extra_programs_elective.toLowerCase().includes(searchTerm) ||
-        school.special_education_support.toLowerCase().includes(searchTerm);
-
-      // Search by language
-      const languageMatch = school.language_used
-        .toLowerCase()
-        .includes(searchTerm);
-
-      // Search by accreditation
-      const accreditationMatch = school.accreditations_affiliations
-        .toLowerCase()
-        .includes(searchTerm);
-
-      // Search by class size
-      const classSizeMatch = school.class_size_notes
-        .toLowerCase()
-        .includes(searchTerm);
-
-      // Search by schedule
-      const scheduleMatch = school.class_schedule
-        .toLowerCase()
-        .includes(searchTerm);
-
-      return (
-        nameMatch ||
-        locationMatch ||
-        curriculumMatch ||
-        priceMatch ||
-        gradeMatch ||
-        programMatch ||
-        languageMatch ||
-        accreditationMatch ||
-        classSizeMatch ||
-        scheduleMatch
-      );
-    });
+    try {
+      const results = await SchoolService.searchSchools(query.trim());
+      return results.slice(0, 3); // Get top 3 results
+    } catch (error) {
+      console.error('Error searching schools:', error);
+      return [];
+    }
   };
 
   // Handle search input changes
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
 
     if (query.trim().length > 0) {
-      // Filter schools based on enhanced search
-      const filtered = searchSchools(query).slice(0, 3); // Get top 3 results
-
-      setSearchResults(filtered);
+      setSearchLoading(true);
       setShowResults(true);
+      // Search schools using Supabase
+      const filtered = await searchSchools(query);
+      setSearchResults(filtered);
+      setSearchLoading(false);
     } else {
       setSearchResults([]);
       setShowResults(false);
+      setSearchLoading(false);
     }
   };
 
@@ -195,6 +130,93 @@ export default function Home() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  if (loading) {
+    return (
+      <>
+        <section
+          className="w-full min-h-screen bg-cover bg-center flex flex-col items-center pb-40 px-5"
+          style={{ backgroundImage: "url('/images/Hero.jpg')" }}
+        >
+          <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0 z-20">
+            <Navbar />
+          </div>
+          <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20 z-1">
+            <h1 className="md:text-7xl text-[32px] font-semibold text-white text-center leading-[120%]">
+              Find the Right Preschool for Your Little One{" "}
+            </h1>
+            <p className="mt-6 text-white text-sm md:px-50 px-5 text-center">
+              Easily compare tuition, programs, and nearby locations from trusted
+              preschools in Metro Manila — no sign-ups, no stress
+            </p>
+            <form
+              onSubmit={handleSearch}
+              className="bg-white w-full p-5 rounded-3xl mt-6 relative"
+              ref={searchRef}
+            >
+              <h4 className="text-[#0F0F0F] md:text-2xl text-base font-medium">
+                Search schools around Philippines
+              </h4>
+              <div className="flex flex-col md:flex-row md:mt-6 mt-3 gap-2.5 rounded-2xl">
+                <div className="bg-[#f5f5f5] w-full md:w-[710px] p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-5 relative">
+                  <i className="ri-search-line text-[#0E1C29]/40 text-2xl"></i>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    placeholder="Search by name, location, price, curriculum, programs..."
+                    className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery("");
+                        setSearchResults([]);
+                        setShowResults(false);
+                      }}
+                      className="text-[#0E1C29]/40 hover:text-[#0E1C29]/60 transition-colors"
+                    >
+                      <i className="ri-close-line text-xl"></i>
+                    </button>
+                  )}
+                </div>
+                <Link
+                  href="/directory"
+                  className="bg-[#774BE5] md:w-fit w-full text-white p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 hover:bg-[#6B3FD6] transition-colors"
+                >
+                  View all schools
+                  <i className="ri-arrow-right-fill text-white text-lg mt-0.5"></i>
+                </Link>
+              </div>
+            </form>
+          </div>
+          <div className="w-full h-full absolute bg-black/20 z-0"></div>
+        </section>
+
+        <section className="w-full md:px-10 px-5 pt-25 bg-white">
+          <h2 className="text-[#0E1C29] md:text-[56px] text-4xl font-normal text-center">
+            Explore Preschools
+          </h2>
+          <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-5 mt-11">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <SchoolCardSkeleton key={index} />
+            ))}
+          </div>
+          <div className="mt-11 mb-25 flex items-center justify-center w-full">
+            <div className="w-fit">
+              <div className="bg-gray-200 rounded-[10px] flex items-center gap-2 px-6 py-3 animate-pulse">
+                <div className="h-4 w-24 bg-gray-300 rounded"></div>
+                <div className="h-4 w-4 bg-gray-300 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -255,53 +277,84 @@ export default function Home() {
             </div>
 
             {/* Search Results Dropdown */}
-            {showResults && searchResults.length > 0 && (
+            {showResults && (
               <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl shadow-lg border border-gray-200 z-50">
                 <div className="p-4">
-                  <h5 className="text-sm font-semibold text-gray-600 mb-3">
-                    Top {searchResults.length} result
-                    {searchResults.length !== 1 ? "s" : ""}
-                  </h5>
-                  {searchResults.map((school, index) => (
-                    <div
-                      key={`${school.school_name}-${index}`}
-                      onClick={() => handleResultClick(school)}
-                      className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
-                    >
-                      <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                        <Image
-                          src={school.logo_banner}
-                          alt={school.school_name}
-                          width={48}
-                          height={48}
-                          className="w-full h-full object-contain"
-                        />
+                  {searchLoading ? (
+                    <>
+                      <div className="animate-pulse">
+                        <div className="h-4 w-24 bg-gray-200 rounded mb-3"></div>
+                        {Array.from({ length: 3 }).map((_, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center gap-3 p-3 mb-2"
+                          >
+                            <div className="w-12 h-12 bg-gray-200 rounded-lg flex-shrink-0"></div>
+                            <div className="flex-1 space-y-2">
+                              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                              <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                              <div className="flex gap-1">
+                                <div className="h-5 bg-gray-200 rounded-full w-16"></div>
+                                <div className="h-5 bg-gray-200 rounded-full w-20"></div>
+                              </div>
+                            </div>
+                            <div className="w-4 h-4 bg-gray-200 rounded"></div>
+                          </div>
+                        ))}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h6 className="font-semibold text-[#0E1C29] text-sm truncate">
-                          {school.school_name}
-                        </h6>
-                        <p className="text-xs text-gray-600 truncate">
-                          {school.city} • {school.min_tuition} -{" "}
-                          {school.max_tuition}
-                        </p>
-                        <div className="flex gap-1 mt-1">
-                          {school.curriculum_tags
-                            .split(", ")
-                            .slice(0, 2)
-                            .map((tag: string, tagIndex: number) => (
-                              <span
-                                key={tagIndex}
-                                className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full"
-                              >
-                                {tag}
-                              </span>
-                            ))}
+                    </>
+                  ) : searchResults.length > 0 ? (
+                    <>
+                      <h5 className="text-sm font-semibold text-gray-600 mb-3">
+                        Top {searchResults.length} result
+                        {searchResults.length !== 1 ? "s" : ""}
+                      </h5>
+                      {searchResults.map((school, index) => (
+                        <div
+                          key={`${school.school_name}-${index}`}
+                          onClick={() => handleResultClick(school)}
+                          className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+                        >
+                          <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                            <Image
+                              src={school.logo_banner}
+                              alt={school.school_name}
+                              width={48}
+                              height={48}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h6 className="font-semibold text-[#0E1C29] text-sm truncate">
+                              {school.school_name}
+                            </h6>
+                            <p className="text-xs text-gray-600 truncate">
+                              {school.city} • {school.min_tuition} -{" "}
+                              {school.max_tuition}
+                            </p>
+                            <div className="flex gap-1 mt-1">
+                              {school.curriculum_tags
+                                .split(", ")
+                                .slice(0, 2)
+                                .map((tag: string, tagIndex: number) => (
+                                  <span
+                                    key={tagIndex}
+                                    className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full"
+                                  >
+                                    {tag}
+                                  </span>
+                                ))}
+                            </div>
+                          </div>
+                          <i className="ri-arrow-right-s-line text-gray-400"></i>
                         </div>
-                      </div>
-                      <i className="ri-arrow-right-s-line text-gray-400"></i>
+                      ))}
+                    </>
+                  ) : (
+                    <div className="text-center py-4">
+                      <p className="text-gray-500 text-sm">No schools found</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             )}

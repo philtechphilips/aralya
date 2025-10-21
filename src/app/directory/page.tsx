@@ -2,7 +2,9 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import SchoolCard from "@/components/SchoolCard";
-import { schoolsData } from "@/utils/data";
+import { SchoolCardSkeleton } from "@/components/SchoolCardSkeleton";
+import { SchoolService } from "@/lib/schoolService";
+import { School } from "@/lib/supabase";
 import React, {
   useState,
   useEffect,
@@ -15,32 +17,6 @@ import Image from "next/image";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-interface School {
-  school_name: string;
-  min_tuition: string;
-  max_tuition: string;
-  tuition_notes: string;
-  grade_levels_offered: string;
-  class_size_notes: string;
-  curriculum_type: string;
-  class_schedule: string;
-  extra_programs_elective: string;
-  after_school_cares: string;
-  admission_requirements: string;
-  scholarships_discounts: string;
-  special_education_support: string;
-  language_used: string;
-  school_bus_note: string;
-  accreditations_affiliations: string;
-  logo_banner: string;
-  website: string;
-  facebook: string;
-  contact_number: string;
-  email: string;
-  city: string;
-  preschool_levels_offered: string;
-  curriculum_tags: string;
-}
 
 // Component that uses useSearchParams - needs to be wrapped in Suspense
 const SchoolDirectoryContent = () => {
@@ -58,6 +34,7 @@ const SchoolDirectoryContent = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [budgetFilter, setBudgetFilter] = useState("");
   const [cityFilter, setCityFilter] = useState("");
+  const [initialLoading, setInitialLoading] = useState(true);
   const observerRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLFormElement>(null);
 
@@ -111,89 +88,34 @@ const SchoolDirectoryContent = () => {
       .trim();
   };
 
-  // Enhanced search function
-  const searchSchools = (query: string) => {
-    if (query.trim().length === 0) return schoolsData;
-
-    const searchTerm = query.toLowerCase().trim();
-
-    return schoolsData.filter((school) => {
-      // Search by school name
-      const nameMatch = school.school_name.toLowerCase().includes(searchTerm);
-
-      // Search by location/city
-      const locationMatch = school.city.toLowerCase().includes(searchTerm);
-
-      // Search by curriculum tags
-      const curriculumMatch = school.curriculum_tags
-        .toLowerCase()
-        .includes(searchTerm);
-
-      // Search by price range (extract numbers from query)
-      const priceNumbers = searchTerm.match(/\d+/g);
-      let priceMatch = false;
-      if (priceNumbers) {
-        const queryPrice = parseInt(priceNumbers[0]);
-        const minPrice = parseInt(school.min_tuition.replace(/[^\d]/g, ""));
-        const maxPrice = parseInt(school.max_tuition.replace(/[^\d]/g, ""));
-        priceMatch = queryPrice >= minPrice && queryPrice <= maxPrice;
+  // Enhanced search function using Supabase
+  const searchSchools = async (query: string) => {
+    if (query.trim().length === 0) {
+      try {
+        return await SchoolService.getAllSchools();
+      } catch (error) {
+        console.error('Error loading all schools:', error);
+        return [];
       }
+    }
 
-      // Search by grade levels
-      const gradeMatch =
-        school.preschool_levels_offered.toLowerCase().includes(searchTerm) ||
-        school.grade_levels_offered.toLowerCase().includes(searchTerm);
-
-      // Search by special programs
-      const programMatch =
-        school.extra_programs_elective.toLowerCase().includes(searchTerm) ||
-        school.special_education_support.toLowerCase().includes(searchTerm);
-
-      // Search by language
-      const languageMatch = school.language_used
-        .toLowerCase()
-        .includes(searchTerm);
-
-      // Search by accreditation
-      const accreditationMatch = school.accreditations_affiliations
-        .toLowerCase()
-        .includes(searchTerm);
-
-      // Search by class size
-      const classSizeMatch = school.class_size_notes
-        .toLowerCase()
-        .includes(searchTerm);
-
-      // Search by schedule
-      const scheduleMatch = school.class_schedule
-        .toLowerCase()
-        .includes(searchTerm);
-
-      return (
-        nameMatch ||
-        locationMatch ||
-        curriculumMatch ||
-        priceMatch ||
-        gradeMatch ||
-        programMatch ||
-        languageMatch ||
-        accreditationMatch ||
-        classSizeMatch ||
-        scheduleMatch
-      );
-    });
+    try {
+      return await SchoolService.searchSchools(query.trim());
+    } catch (error) {
+      console.error('Error searching schools:', error);
+      return [];
+    }
   };
 
   // Handle local search input changes
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setLocalSearchQuery(query);
 
     if (query.trim().length > 0) {
-      // Filter schools based on enhanced search
-      const filtered = searchSchools(query).slice(0, 3); // Get top 3 results
-
-      setSearchResults(filtered);
+      // Filter schools based on enhanced search using Supabase
+      const filtered = await searchSchools(query);
+      setSearchResults(filtered.slice(0, 3)); // Get top 3 results
       setShowResults(true);
     } else {
       setSearchResults([]);
@@ -279,9 +201,20 @@ const SchoolDirectoryContent = () => {
 
   // Filter schools based on search query and filters
   useEffect(() => {
-    const searchFiltered = searchSchools(searchQuery);
-    const finalFiltered = applyFilters(searchFiltered);
-    setFilteredSchools(finalFiltered);
+    const loadFilteredSchools = async () => {
+      try {
+        const searchFiltered = await searchSchools(searchQuery);
+        const finalFiltered = applyFilters(searchFiltered);
+        setFilteredSchools(finalFiltered);
+      } catch (error) {
+        console.error('Error loading filtered schools:', error);
+        setFilteredSchools([]);
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+
+    loadFilteredSchools();
   }, [searchQuery, budgetFilter, cityFilter, applyFilters]);
 
   // Load initial schools
@@ -337,6 +270,25 @@ const SchoolDirectoryContent = () => {
       }
     };
   }, [currentPage, hasMore, isLoading, loadMoreSchools]);
+
+  if (initialLoading) {
+    return (
+      <>
+        <Navbar />
+        <section className="w-full md:px-10 px-5 pt-25 bg-white">
+          <h2 className="text-[#0E1C29] md:text-[56px] text-4xl font-normal text-center">
+            Explore Preschools
+          </h2>
+          <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-5 mt-11">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <SchoolCardSkeleton key={index} />
+            ))}
+          </div>
+        </section>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -579,13 +531,12 @@ const SchoolDirectoryContent = () => {
         </div>
 
         {/* Loading indicator and intersection observer */}
-        <div ref={observerRef} className="w-full flex justify-center py-8">
+        <div ref={observerRef}>
           {isLoading && (
-            <div className="flex items-center gap-2">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#774BE5]"></div>
-              <span className="text-[#774BE5] font-medium">
-                Loading more schools...
-              </span>
+            <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-5">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <SchoolCardSkeleton key={index} />
+              ))}
             </div>
           )}
         </div>
@@ -598,12 +549,20 @@ const SchoolDirectoryContent = () => {
 
 // Loading component for Suspense fallback
 const DirectoryLoading = () => (
-  <div className="w-full min-h-screen bg-[#F9FAFB] flex items-center justify-center">
-    <div className="text-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#774BE5] mx-auto mb-4"></div>
-      <p className="text-[#0E1C29] font-medium">Loading directory...</p>
-    </div>
-  </div>
+  <>
+    <Navbar />
+    <section className="w-full md:px-10 px-5 pt-25 bg-white">
+      <h2 className="text-[#0E1C29] md:text-[56px] text-4xl font-normal text-center">
+        Explore Preschools
+      </h2>
+      <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-5 mt-11">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <SchoolCardSkeleton key={index} />
+        ))}
+      </div>
+    </section>
+    <Footer />
+  </>
 );
 
 // Main component with Suspense boundary

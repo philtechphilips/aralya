@@ -30,7 +30,8 @@ const Contact = () => {
 
             <div className="w-full flex justify-center mt-8">
               <Link
-                href="/"
+                href="https://web.facebook.com/people/Aralya/61578164295126"
+                target="_blank"
                 className="bg-[#774BE5] min-w-20 text-white p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1"
               >
                 Message Aralya on Facebook
@@ -45,3 +46,4 @@ const Contact = () => {
 };
 
 export default Contact;
+

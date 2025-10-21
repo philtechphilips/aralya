@@ -4,28 +4,46 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
-import { schoolsData } from "@/utils/data";
+import { SchoolService } from "@/lib/schoolService";
+import { School } from "@/lib/supabase";
 import { useParams } from "next/navigation";
+import { SkeletonLoader } from "@/components/SkeletonLoader";
 
 const SchoolDetails = () => {
   const params = useParams();
   const slug = params.slug as string;
 
-  // Find the school by matching the slug
-  const school =
-    schoolsData.find((s) => {
-      const schoolSlug = s.school_name
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, "")
-        .replace(/\s+/g, "-")
-        .replace(/-+/g, "-")
-        .trim();
-      return schoolSlug === slug;
-    }) || null;
-
+  const [school, setSchool] = useState<School | null>(null);
+  const [loading, setLoading] = useState(true);
   const [coords, setCoords] = useState<{ lat: string; lon: string } | null>(
     null,
   );
+
+  // Load school data from Supabase
+  useEffect(() => {
+    const loadSchool = async () => {
+      try {
+        const schools = await SchoolService.getAllSchools();
+        const foundSchool = schools.find((s) => {
+          const schoolSlug = s.school_name
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .trim();
+          return schoolSlug === slug;
+        });
+        setSchool(foundSchool || null);
+      } catch (error) {
+        console.error("Error loading school:", error);
+        setSchool(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSchool();
+  }, [slug]);
 
   // Fetch city coordinates from OpenStreetMap
   useEffect(() => {
@@ -53,6 +71,82 @@ const SchoolDetails = () => {
   const mapSrc = coords
     ? `https://www.openstreetmap.org/export/embed.html?bbox=${coords.lon},${coords.lat},${coords.lon},${coords.lat}&layer=mapnik&marker=${coords.lat},${coords.lon}`
     : "";
+
+  // Show loading state
+  if (loading) {
+    return (
+      <section className="w-full bg-[#F9FAFB] flex flex-col items-center pb-40 px-5">
+        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0">
+          <Navbar textColor="black" />
+        </div>
+        <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 mt-28">
+          {/* Header Skeleton */}
+          <div className="rounded-[16px] bg-white p-4 flex md:flex-row flex-col gap-4 md:items-center w-full">
+            <SkeletonLoader className="w-80 h-50" />
+            <div className="flex flex-col gap-2">
+              <SkeletonLoader className="h-8 w-64" />
+              <div className="flex items-center my-1">
+                <SkeletonLoader className="h-4 w-4 rounded-full mr-2" />
+                <SkeletonLoader className="h-4 w-32" />
+              </div>
+              <SkeletonLoader className="h-8 w-32 rounded-lg" />
+            </div>
+          </div>
+
+          {/* Contact Section Skeleton */}
+          <div className="rounded-[16px] bg-white p-4 mt-6 flex gap-4 items-center w-full">
+            <div className="flex flex-col gap-2 w-full">
+              <SkeletonLoader className="h-6 w-32" />
+              <div className="grid md:grid-cols-4 grid-cols-2 w-full gap-4">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <SkeletonLoader key={index} className="h-10 rounded-lg" />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Overview + Info Skeleton */}
+          <div className="flex md:flex-row flex-col items-start w-full gap-8 mt-11">
+            {/* Overview Skeleton */}
+            <div className="rounded-2xl p-8 w-full bg-white">
+              <div className="flex gap-2 items-center -ml-1 mb-4">
+                <SkeletonLoader className="h-6 w-6 rounded" />
+                <SkeletonLoader className="h-6 w-24" />
+              </div>
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="flex flex-col gap-2 mt-4">
+                  <SkeletonLoader className="h-5 w-32" />
+                  <SkeletonLoader className="h-4 w-full" />
+                </div>
+              ))}
+            </div>
+
+            {/* School Info Skeleton */}
+            <div className="rounded-2xl p-8 w-full bg-white">
+              <div className="flex gap-2 items-center -ml-1 mb-4">
+                <SkeletonLoader className="h-6 w-6 rounded" />
+                <SkeletonLoader className="h-6 w-40" />
+              </div>
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="flex gap-4 mt-4">
+                  <SkeletonLoader className="h-5 w-5 rounded" />
+                  <div className="flex-1">
+                    <SkeletonLoader className="h-5 w-32 mb-2" />
+                    <SkeletonLoader className="h-4 w-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Map Skeleton */}
+          <div className="w-full mt-10 rounded-3xl">
+            <SkeletonLoader className="h-96 w-full rounded-3xl" />
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   // Show 404 if school not found
   if (!school) {

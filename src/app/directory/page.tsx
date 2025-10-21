@@ -365,7 +365,7 @@ const SchoolDirectoryContent = () => {
                           {school.city} • {school.min_tuition} -{" "}
                           {school.max_tuition}
                         </p>
-                        <div className="flex gap-1 mt-1">
+                        <div className="flex flex-wrap gap-1 mt-1">
                           {school.curriculum_tags
                             .split(", ")
                             .slice(0, 2)

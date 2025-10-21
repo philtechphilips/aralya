@@ -14,8 +14,19 @@ const Footer = () => {
             height={100}
           />
           <div className="flex items-center gap-2">
-            <i className="ri-instagram-line text-white text-2xl"></i>
-            <i className="ri-facebook-line text-white text-2xl"></i>
+            <Link
+              href="https://www.instagram.com/hello.aralya/?fbclid=IwY2xjawNi6ZNleHRuA2FlbQIxMQBicmlkETFtQzZWdlZ5NXpPMDNpYkJMAR6K2jgVdxDYAKxtyPbjdimUQRAcxd9TjB-QOkfa50PY4S48iIxo6ew11J6hVg_aem_GJNOU2znrChkHLGCQPzJYg"
+              target="_blank"
+            >
+              <i className="ri-instagram-line text-white text-2xl"></i>
+            </Link>
+
+            <Link
+              href="https://web.facebook.com/people/Aralya/61578164295126"
+              target="_blank"
+            >
+              <i className="ri-facebook-line text-white text-2xl"></i>
+            </Link>
           </div>
         </div>
 

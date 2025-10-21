@@ -145,8 +145,8 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
               </Link>
             </li>
             <li className="text-white hover:text-[#0E1C29] transition-colors duration-500 ease-in-out delay-100">
-              <Link href="/about" onClick={() => setIsMenuOpen(false)}>
-                About
+              <Link href="/directory" onClick={() => setIsMenuOpen(false)}>
+                Browse
               </Link>
             </li>
             <li className="text-white hover:text-[#0E1C29] transition-colors duration-500 ease-in-out delay-100">

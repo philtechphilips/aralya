@@ -206,18 +206,10 @@ export default function Home() {
           <Navbar />
         </div>
         <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20 z-1">
-          <h1
-            className="md:text-7xl text-[32px] font-semibold text-white text-center leading-[120%]"
-            data-aos="fade-up"
-            data-aos-delay="100"
-          >
+          <h1 className="md:text-7xl text-[32px] font-semibold text-white text-center leading-[120%]">
             Find the Right Preschool for Your Little One{" "}
           </h1>
-          <p
-            className="mt-6 text-white text-sm md:px-50 px-5 text-center"
-            data-aos="fade-up"
-            data-aos-delay="200"
-          >
+          <p className="mt-6 text-white text-sm md:px-50 px-5 text-center">
             Easily compare tuition, programs, and nearby locations from trusted
             preschools in Metro Manila — no sign-ups, no stress
           </p>
@@ -225,8 +217,6 @@ export default function Home() {
             onSubmit={handleSearch}
             className="bg-white w-full p-5 rounded-3xl mt-6 relative"
             ref={searchRef}
-            data-aos="fade-up"
-            data-aos-delay="300"
           >
             <h4 className="text-[#0F0F0F] md:text-2xl text-base font-medium">
               Search schools around Philippines
@@ -322,19 +312,12 @@ export default function Home() {
       </section>
 
       <section className="w-full md:px-10 px-5 py-25 bg-white">
-        <h2
-          className="text-[#0E1C29] md:text-[56px] text-4xl font-normal text-center"
-          data-aos="fade-up"
-        >
+        <h2 className="text-[#0E1C29] md:text-[56px] text-4xl font-normal text-center">
           Explore Preschools
         </h2>
         <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-5 mt-11">
           {featuredSchools.map((school, index) => (
-            <div
-              key={`${school.school_name}-${index}`}
-              data-aos="fade-up"
-              data-aos-delay={`${400 + index * 100}`}
-            >
+            <div key={`${school.school_name}-${index}`}>
               <SchoolCard
                 imageSrc={school.logo_banner}
                 imageAlt={school.school_name}
@@ -347,11 +330,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div
-          className="mt-11 mb-25 flex items-center justify-center w-full"
-          data-aos="fade-up"
-          data-aos-delay="700"
-        >
+        <div className="mt-11 mb-25 flex items-center justify-center w-full">
           <div className="w-fit">
             <Link
               href="/directory"
@@ -364,7 +343,7 @@ export default function Home() {
         </div>
       </section>
 
-      <div data-aos="fade-up" data-aos-delay="100">
+      <div>
         <HowItWorksSection
           title="How Aralya Works"
           description="Find the right preschool in 3 quick steps"
@@ -395,7 +374,7 @@ export default function Home() {
         />
       </div>
 
-      <div data-aos="fade-up" data-aos-delay="200">
+      <div>
         <FAQSection
           title="Questions? Answers!"
           description="Find quick answers to the most common questions about our platform"
@@ -429,7 +408,7 @@ export default function Home() {
         />
       </div>
 
-      <div data-aos="fade-up" data-aos-delay="300">
+      <div>
         <AboutSection
           title="About Aralya"
           description="Aralya helps Filipino parents find preschools fast. Compare schools by city, tuition, curriculum, and schedule, then contact the school in one tap-Call, Text, FB Message, or Email. No sign-up. Free for parents. We verify details with schools and refresh weekly so you can decide with confidence."

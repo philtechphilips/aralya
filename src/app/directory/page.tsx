@@ -349,18 +349,12 @@ const SchoolDirectoryContent = () => {
           <Navbar />
         </div>
         <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20 relative z-10">
-          <h1
-            className="md:text-[56px] text-[32px] font-regular text-white text-center leading-[120%]"
-            data-aos="fade-up"
-            data-aos-delay="100"
-          >
+          <h1 className="md:text-[56px] text-[32px] font-regular text-white text-center leading-[120%]">
             Find Preschools
           </h1>
           <form
             className="bg-white w-full md:rounded-3xl rounded-full mt-6 relative"
             ref={searchRef}
-            data-aos="fade-up"
-            data-aos-delay="200"
           >
             <div className="flex flex-col md:flex-row gap-2.5 rounded-2xl">
               <div className="w-full p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-5 relative">
@@ -390,7 +384,7 @@ const SchoolDirectoryContent = () => {
 
             {/* Search Results Dropdown */}
             {showResults && searchResults.length > 0 && (
-              <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl shadow-lg border border-gray-200 z-50">
+              <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl shadow-lg border border-gray-200 z-[9999]">
                 <div className="p-4">
                   <h5 className="text-sm font-semibold text-gray-600 mb-3">
                     Top {searchResults.length} result
@@ -445,7 +439,7 @@ const SchoolDirectoryContent = () => {
 
       <section className="w-full md:px-10 px-5 py-25 bg-white">
         {searchQuery && (
-          <div className="mb-6" data-aos="fade-up" data-aos-delay="100">
+          <div className="mb-6">
             <h2 className="text-2xl font-semibold text-[#0E1C29] mb-2">
               Search Results for &quot;{searchQuery}&quot;
             </h2>
@@ -456,11 +450,7 @@ const SchoolDirectoryContent = () => {
           </div>
         )}
 
-        <div
-          className="flex items-center gap-2"
-          data-aos="fade-up"
-          data-aos-delay="200"
-        >
+        <div className="flex items-center gap-2">
           <button
             onClick={() => {
               setActiveFilter("all");
@@ -476,7 +466,7 @@ const SchoolDirectoryContent = () => {
             All
           </button>
 
-          <div className="relative filter-dropdown">
+          <div className="relative filter-dropdown z-[10000]">
             <button
               onClick={() =>
                 setActiveFilter(activeFilter === "budget" ? "all" : "budget")
@@ -492,7 +482,7 @@ const SchoolDirectoryContent = () => {
             </button>
 
             {activeFilter === "budget" && (
-              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 min-w-48">
+              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200  min-w-48 z-[9999]">
                 <div className="p-2">
                   {[
                     { key: "under-100k", label: "Under ₱100k" },
@@ -522,7 +512,7 @@ const SchoolDirectoryContent = () => {
             )}
           </div>
 
-          <div className="relative filter-dropdown">
+          <div className="relative filter-dropdown z-[10000]">
             <button
               onClick={() =>
                 setActiveFilter(activeFilter === "city" ? "all" : "city")
@@ -538,7 +528,7 @@ const SchoolDirectoryContent = () => {
             </button>
 
             {activeFilter === "city" && (
-              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 min-w-48">
+              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-[9999] min-w-48">
                 <div className="p-2">
                   {[
                     "Angeles City",
@@ -572,13 +562,9 @@ const SchoolDirectoryContent = () => {
             )}
           </div>
         </div>
-        <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-5 mt-11">
+        <div className="w-full grid md:grid-cols-3 grid-cols-1 gap-5 mt-11 z-0">
           {displayedSchools.map((school, index) => (
-            <div
-              key={`${school.school_name}-${index}`}
-              data-aos="fade-up"
-              data-aos-delay={`${300 + (index % 12) * 50}`}
-            >
+            <div key={`${school.school_name}-${index}`}>
               <SchoolCard
                 imageSrc={school.logo_banner}
                 imageAlt={school.school_name}
@@ -593,12 +579,7 @@ const SchoolDirectoryContent = () => {
         </div>
 
         {/* Loading indicator and intersection observer */}
-        <div
-          ref={observerRef}
-          className="w-full flex justify-center py-8"
-          data-aos="fade-up"
-          data-aos-delay="100"
-        >
+        <div ref={observerRef} className="w-full flex justify-center py-8">
           {isLoading && (
             <div className="flex items-center gap-2">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#774BE5]"></div>

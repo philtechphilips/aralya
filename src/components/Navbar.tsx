@@ -51,7 +51,7 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
       }`}
     >
       <div className="flex items-center justify-between w-full">
-        <div className="hidden md:block w-1/3">
+        <Link href="/" className="hidden md:block w-1/3">
           {isScrolling && isDesktop ? (
             <Image
               src="/images/logo-white.png"
@@ -62,7 +62,7 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
           ) : (
             <Image src="/images/Logo.png" alt="logo" width={100} height={100} />
           )}
-        </div>
+        </Link>
         <div className="block md:hidden">
           <Image
             src="/images/logo-white.png"

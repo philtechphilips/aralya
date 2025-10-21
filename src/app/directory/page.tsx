@@ -345,10 +345,10 @@ const SchoolDirectoryContent = () => {
         style={{ backgroundImage: "url('/images/Hero.jpg')" }}
       >
         <div className="w-full h-full absolute top-0 left-0 bg-black/20 z-0"></div>
-        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0 relative z-10">
+        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0 relative z-100">
           <Navbar />
         </div>
-        <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20 relative z-10">
+        <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20 relative z-0">
           <h1 className="md:text-[56px] text-[32px] font-regular text-white text-center leading-[120%]">
             Find Preschools
           </h1>

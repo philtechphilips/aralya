@@ -311,7 +311,7 @@ export default function Home() {
         <div className="w-full h-full absolute bg-black/20 z-0"></div>
       </section>
 
-      <section className="w-full md:px-10 px-5 py-25 bg-white">
+      <section className="w-full md:px-10 px-5 pt-25 bg-white">
         <h2 className="text-[#0E1C29] md:text-[56px] text-4xl font-normal text-center">
           Explore Preschools
         </h2>

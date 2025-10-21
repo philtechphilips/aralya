@@ -365,17 +365,17 @@ const SchoolDirectoryContent = () => {
                           {school.city} • {school.min_tuition} -{" "}
                           {school.max_tuition}
                         </p>
-                        <div className="flex flex-wrap gap-1 mt-1">
+                        <div className="flex flex-wrap gap-1 mt-1 w-full">
                           {school.curriculum_tags
                             .split(", ")
                             .slice(0, 2)
                             .map((tag: string, tagIndex: number) => (
-                              <span
+                              <div
                                 key={tagIndex}
                                 className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full"
                               >
                                 {tag}
-                              </span>
+                              </div>
                             ))}
                         </div>
                       </div>

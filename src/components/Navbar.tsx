@@ -44,9 +44,9 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
 
   return (
     <div
-      className={`transition-all duration-500 ease-in-out fixed md:top-0 top-5 md:left-0 left-5 right-0 z-5000 md:px-10 px-5 py-5 ${
+      className={`transition-all duration-500 ease-in-out fixed md:top-0 top-5 md:left-0 left-5 right-0 z-[50000] md:px-10 px-5 py-5 ${
         isScrolling && isDesktop
-          ? "bg-[#774BE5] w-[780px] rounded-2xl mx-auto md:top-10 z-5000"
+          ? "bg-[#774BE5] w-[780px] rounded-2xl mx-auto md:top-10 z-[50000]"
           : "md:w-full w-[90%] md:bg-white/5 bg-[#774BE5] rounded-lg md:rounded-none"
       }`}
     >
@@ -133,7 +133,7 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out z-5000 ${
+        className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out z-[999999] ${
           isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >

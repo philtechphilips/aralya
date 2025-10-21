@@ -133,7 +133,7 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${
+        className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out z-5000 ${
           isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >

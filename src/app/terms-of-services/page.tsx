@@ -11,175 +11,84 @@ const TermsOfServices = () => {
         </div>
 
         <div className="pt-13 flex flex-col md:w-[930px]  w-full px-0 md:px-0 mt-20">
-          <h3 className="text-4xl text-[#0E1C29]">Terms Of Services</h3>
+          <h3 className="text-4xl text-[#0E1C29] font-semibold">(Terms of Use)</h3>
+          <p className="text-lg text-[#0E1C29] font-bold mt-4">
+            Aralya Terms of Use (MVP)
+          </p>
           <p className="text-lg text-[#0E1C29] font-medium mt-4">
-            Last updated on 23 Jan 2025
-          </p>
-
-          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
-
-          <p className="text-[#0E1C29] font-semibold">
-            Welcome to Alter (&quot;we&quot; or &quot;us&quot;). This Terms Of
-            Services is designed to help you understand how we collect, use,
-            disclose, and safeguard your personal information when you use our
-            website and related services.
-          </p>
-
-          <ul className="list-decimal list-inside mt-4 flex flex-col gap-6">
-            <li className="text-[#0E1C29] font-semibold">
-              Information We Collect
-            </li>
-            <li className="text-[#0E1C29] font-semibold">
-              How We Use Your Information
-            </li>
-            <li className="text-[#0E1C29] font-semibold">
-              Sharing Your Information
-            </li>
-            <li className="text-[#0E1C29] font-semibold">
-              Cookies and Similar Technologies
-            </li>
-            <li className="text-[#0E1C29] font-semibold">Your Choices</li>
-            <li className="text-[#0E1C29] font-semibold">Security</li>
-            <li className="text-[#0E1C29] font-semibold">
-              Children&apos;s Privacy
-            </li>
-            <li className="text-[#0E1C29] font-semibold">
-              Changes to This Privacy Policy
-            </li>
-            <li className="text-[#0E1C29] font-semibold">Contact Us</li>
-          </ul>
-
-          <div className="w-full h-0.25 bg-[#d3d3d3] my-6"></div>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">
-            1. Information We Collect
-          </p>
-          <ul className="list-disc list-inside mt-4 flex flex-col gap-6 text-[#0E1C29] font-semibold">
-            <li>
-              1.1 Personal Information
-              <p className="mt-6">
-                We may collect personal information, such as your name, email
-                address, and other contact details when you voluntarily provide
-                it to us, such as when you register for an account, subscribe to
-                newsletters, or contact us through the website.
-              </p>
-            </li>
-
-            <li>
-              1.2 Usage Information
-              <p className="mt-6">
-                We may collect information about your use of the website,
-                including your IP address, browser type, device information, and
-                pages visited. This information helps us analyze trends,
-                administer the site, and improve user experience.
-              </p>
-            </li>
-          </ul>
-
-          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">
-            2. How We Use Your Information
-          </p>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">
-            We use the collected information for various purposes, including:
-          </p>
-
-          <ul className="list-disc list-inside mt-4 flex flex-col gap-6 text-[#0E1C29] font-semibold">
-            <li>Providing and maintaining the website</li>
-
-            <li>Communicating with you about your account and our services</li>
-
-            <li>
-              Sending newsletters, promotional materials, and other information
-              you request
-            </li>
-
-            <li>Analyzing website usage and improving our services</li>
-          </ul>
-
-          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">
-            3. Sharing Your Information
-          </p>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">
-            We do not sell, trade, or otherwise transfer your personal
-            information to third parties without your consent, except as
-            described in this Privacy Policy. We may share information with
-            trusted third-party service providers who assist us in operating our
-            website or conducting our business.
+            Last updated: 23 Oct 2025
           </p>
 
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
           <p className="text-[#0E1C29] font-semibold mb-6">
-            4. Cookies and Similar Technologies
+           1. About Aralya
           </p>
-
           <p className="text-[#0E1C29] font-semibold mb-6">
-            We use cookies and similar technologies to enhance your experience
-            on our website. You can control cookies through your browser
-            settings, but disabling them may affect your ability to use certain
-            features of the site.
-          </p>
-
-          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">5. Your Choices</p>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">
-            You can manage your communication preferences by unsubscribing from
-            newsletters or adjusting your account settings. You may also contact
-            us to update or delete your personal information.
-          </p>
-
-          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">6. Security</p>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">
-            We take reasonable measures to protect the security of your personal
-            information. However, no method of transmission over the internet or
-            electronic storage is completely secure. Therefore, we cannot
-            guarantee absolute security.
+            Aralya provides preschool listings and information for parents. We are not a school and do not guarantee availability, pricing, or admissions outcomes. Always confirm details directly with schools.
           </p>
 
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
           <p className="text-[#0E1C29] font-semibold mb-6">
-            7. Children&apos;s Privacy
+            2. Acceptable use
           </p>
-
           <p className="text-[#0E1C29] font-semibold mb-6">
-            Our website is not directed to individuals under the age of 18. If
-            you become aware that a child has provided us with personal
-            information, please contact us, and we will take steps to remove
-            such information.
+            Don't attempt to damage, disrupt, or misuse the site. Don't submit unlawful, abusive, or misleading information.
           </p>
 
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
           <p className="text-[#0E1C29] font-semibold mb-6">
-            8. Changes to This Privacy Policy
+            3. No scraping / automated copying
           </p>
-
           <p className="text-[#0E1C29] font-semibold mb-6">
-            We may update this Privacy Policy periodically. We will notify you
-            of any changes by posting the new Privacy Policy on this page. Your
-            continued use of the website after such modifications will
-            constitute your acknowledgment of the modified Privacy Policy.
+            You may not use bots, scrapers, or other automated tools to copy, extract, or redistribute Aralya content or data without our written permission.
           </p>
 
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
-          <p className="text-[#0E1C29] font-semibold mb-6">9. Contact Us</p>
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            4. Intellectual property
+          </p>
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            Text, layout, and design are owned by Aralya or our licensors. You may view for personal use. Commercial reuse requires prior written consent.
+          </p>
+
+          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
           <p className="text-[#0E1C29] font-semibold mb-6">
-            If you have any questions about this Privacy Policy, please contact
-            us at alter@support.com
+            5. Links & third parties
+          </p>
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            We link to third-party sites (e.g., Facebook/Messenger, school websites). We're not responsible for their content or policies.
+          </p>
+
+          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
+
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            6. Disclaimer & limitation of liability
+          </p>
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            Information may change and may contain errors. Aralya is provided "as is". To the extent allowed by law, we are not liable for indirect, incidental, or consequential damages.
+          </p>
+
+          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
+
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            7. Changes
+          </p>
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            We may update these Terms and will change the Last updated date above. Continued use means you accept the updated Terms.
+          </p>
+
+          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
+
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            8. Contact
+          </p>
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            Questions about these Terms: hello@aralya.ph
           </p>
         </div>
       </section>

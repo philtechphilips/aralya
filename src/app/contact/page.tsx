@@ -6,7 +6,7 @@ import React from "react";
 const Contact = () => {
   return (
     <>
-      <section className="w-full bg-cover bg-center min-h-screen flex flex-col items-center pb-40 px-5 bg-[#F9FAFB]">
+      <section className="w-full bg-cover bg-center min-h-screen flex flex-col items-center pb-40 px-5 bg-purple-50">
         <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0">
           <Navbar textColor="black" />
         </div>

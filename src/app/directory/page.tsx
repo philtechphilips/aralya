@@ -177,8 +177,8 @@ const SchoolDirectoryContent = () => {
         const range = budgetRanges[budgetFilter as keyof typeof budgetRanges];
         if (range) {
           filtered = filtered.filter((school) => {
-            const minPrice = parseInt(school.min_tuition.replace(/[^\d]/g, ""));
-            const maxPrice = parseInt(school.max_tuition.replace(/[^\d]/g, ""));
+            const minPrice = parseFloat(school.min_tuition.replace(/[^\d.]/g, ""));
+            const maxPrice = parseFloat(school.max_tuition.replace(/[^\d.]/g, ""));
             return (
               (minPrice >= range.min && minPrice <= range.max) ||
               (maxPrice >= range.min && maxPrice <= range.max)
@@ -336,7 +336,7 @@ const SchoolDirectoryContent = () => {
 
             {/* Search Results Dropdown */}
             {showResults && searchResults.length > 0 && (
-              <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl shadow-lg border border-gray-200 z-[9999]">
+              <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl shadow-lg border border-gray-200 z-[99]">
                 <div className="p-4">
                   <h5 className="text-sm font-semibold text-gray-600 mb-3">
                     Top {searchResults.length} result
@@ -418,7 +418,7 @@ const SchoolDirectoryContent = () => {
             All
           </button>
 
-          <div className="relative filter-dropdown z-[10000]">
+          <div className="relative filter-dropdown z-[10]">
             <button
               onClick={() =>
                 setActiveFilter(activeFilter === "budget" ? "all" : "budget")
@@ -434,7 +434,7 @@ const SchoolDirectoryContent = () => {
             </button>
 
             {activeFilter === "budget" && (
-              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200  min-w-48 z-[9999]">
+              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200  min-w-48 z-[9]">
                 <div className="p-2">
                   {[
                     { key: "under-100k", label: "Under ₱100k" },
@@ -450,10 +450,10 @@ const SchoolDirectoryContent = () => {
                           budgetFilter === option.key ? "" : option.key,
                         );
                       }}
-                      className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-gray-50 ${
+                      className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-gray-100 ${
                         budgetFilter === option.key
-                          ? "bg-[#774BE5] text-white"
-                          : "text-gray-700"
+                          ? "bg-[#774BE5] hover:bg-[#774BE5]/80 text-white hover:text-[#774BE5]"
+                          : "hover:text-[#774BE5] text-black"
                       }`}
                     >
                       {option.label}
@@ -464,7 +464,7 @@ const SchoolDirectoryContent = () => {
             )}
           </div>
 
-          <div className="relative filter-dropdown z-[10000]">
+          <div className="relative filter-dropdown z-[100]">
             <button
               onClick={() =>
                 setActiveFilter(activeFilter === "city" ? "all" : "city")
@@ -500,10 +500,10 @@ const SchoolDirectoryContent = () => {
                       onClick={() => {
                         setCityFilter(cityFilter === city ? "" : city);
                       }}
-                      className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-gray-50 ${
+                      className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-gray-100 text-gray-700 ${
                         cityFilter === city
-                          ? "bg-[#774BE5] text-white"
-                          : "text-gray-700"
+                         ? "bg-[#774BE5] hover:bg-[#774BE5]/80 text-white hover:text-[#774BE5]"
+                          : "hover:text-[#774BE5] text-black"
                       }`}
                     >
                       {city}

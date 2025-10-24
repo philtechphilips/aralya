@@ -21,7 +21,7 @@ const SchoolCard = ({
   schoolSlug,
 }: SchoolCardProps) => {
   return (
-    <div className="bg-[#F9FAFB] rounded-[16px] p-5">
+    <div className="bg-[#eeeff1] rounded-[16px] p-5 h-full flex flex-col">
       <div className="w-full h-50 rounded-[10px] overflow-hidden mb-3">
         <Image
           src={imageSrc}
@@ -36,19 +36,19 @@ const SchoolCard = ({
         <i className="ri-map-pin-line text-[#374151] text-lg"></i>
         <p className="text-base font-medium text-[#374151]">{location}</p>
       </div>
-      <div className="flex mt-2.5 gap-2">
+      <div className="flex w-full mt-2.5 gap-2 flex-wrap">
         {tags.map((tag, index) => (
           <div
             key={index}
-            className="border border-[#E5E7EB] rounded-full py-1 px-3 font-medium flex items-center justify-center"
+            className="border border-[#cecece] rounded-full py-1 px-3 font-medium flex items-center justify-center"
           >
             <p className="text-sm text-[#374151]">{tag}</p>
           </div>
         ))}
       </div>
-      <div className="flex items-center justify-between mt-5">
+      <div className="flex items-center justify-between mt-auto pt-5">
         <div className="bg-white rounded-full py-1 px-3 font-medium flex items-center justify-center w-fit">
-          <p className="text-base text-[#774BE5]">{priceRange}</p>
+          <p className="text-base text-[#774BE5]">{priceRange.split(' ').length > 3 ? priceRange.split(' ').slice(0, 3).join(' ') + '...' : priceRange}</p>
         </div>
         <Link
           href={schoolSlug ? `/directory/${schoolSlug}` : "/directory"}

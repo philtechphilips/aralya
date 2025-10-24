@@ -186,7 +186,7 @@ const SchoolDetails = () => {
       <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 mt-28">
         {/* Header */}
         <div className="rounded-[16px] bg-white p-4 flex md:flex-row flex-col gap-4 md:items-center w-full">
-          <div className="w-80 h-50">
+          <div className="w-80 h-50 bg-gray-200 border border-gray-200 rounded-[10px] overflow-hidden">
             <Image
               src={school?.logo_banner || "/images/Logo.png"}
               alt={school?.school_name || "School Logo"}
@@ -204,6 +204,17 @@ const SchoolDetails = () => {
               <p className="text-base font-medium text-[#374151]">
                 {school?.city || "City"}
               </p>
+            </div>
+            <div className="flex items-center my-1">
+              <i className="ri-global-line text-[#774BE5] text-lg"></i>
+              <a 
+                href={school?.website || "#"} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-base font-medium text-[#774BE5] hover:underline"
+              >
+                Official website ↗
+              </a>
             </div>
             <div className="bg-[#774BE5] rounded-lg px-4 py-2 w-fit">
               <p className="text-white font-semibold text-sm">

@@ -12,173 +12,107 @@ const PrivacyPolicy = () => {
         </div>
 
         <div className="pt-13 flex flex-col md:w-[930px]  w-full px-0 md:px-0 mt-20">
-          <h3 className="text-4xl text-[#0E1C29]">Privacy Policy</h3>
+          <h3 className="text-4xl text-[#0E1C29] font-semibold">(Privacy Policy)</h3>
+          <p className="text-lg text-[#0E1C29] font-bold mt-4">
+          Aralya Privacy Policy (MVP)
+          </p>
           <p className="text-lg text-[#0E1C29] font-medium mt-4">
-            Last updated on 23 Jan 2025
+            Last updated: 23 Oct 2025
           </p>
 
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
-          <p className="text-[#0E1C29] font-semibold">
-            Welcome to Alter ("we" or "us"). This Privacy Policy is designed to
-            help you understand how we collect, use, disclose, and safeguard
-            your personal information when you use our website and related
-            services.
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            Who we are
+          </p>
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            Aralya ("we", "us") helps parents compare preschools in Metro Manila.
+          </p>
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            Contact: hello@aralya.ph
           </p>
 
-          <ul className="list-decimal list-inside mt-4 flex flex-col gap-6">
-            <li className="text-[#0E1C29] font-semibold">
-              Information We Collect
-            </li>
-            <li className="text-[#0E1C29] font-semibold">
-              How We Use Your Information
-            </li>
-            <li className="text-[#0E1C29] font-semibold">
-              Sharing Your Information
-            </li>
-            <li className="text-[#0E1C29] font-semibold">
-              Cookies and Similar Technologies
-            </li>
-            <li className="text-[#0E1C29] font-semibold">Your Choices</li>
-            <li className="text-[#0E1C29] font-semibold">Security</li>
-            <li className="text-[#0E1C29] font-semibold">Children's Privacy</li>
-            <li className="text-[#0E1C29] font-semibold">
-              Changes to This Privacy Policy
-            </li>
-            <li className="text-[#0E1C29] font-semibold">Contact Us</li>
-          </ul>
-
-          <div className="w-full h-0.25 bg-[#d3d3d3] my-6"></div>
+          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
           <p className="text-[#0E1C29] font-semibold mb-6">
-            1. Information We Collect
+           1. What we collect
           </p>
-          <ul className="list-disc list-inside mt-4 flex flex-col gap-6 text-[#0E1C29] font-semibold">
-            <li>
-              1.1 Personal Information
-              <p className="mt-6">
-                We may collect personal information, such as your name, email
-                address, and other contact details when you voluntarily provide
-                it to us, such as when you register for an account, subscribe to
-                newsletters, or contact us through the website.
-              </p>
-            </li>
-
-            <li>
-              1.2 Usage Information
-              <p className="mt-6">
-                We may collect information about your use of the website,
-                including your IP address, browser type, device information, and
-                pages visited. This information helps us analyze trends,
-                administer the site, and improve user experience.
-              </p>
-            </li>
+          <ul className="list-disc list-inside mt-4 flex flex-col gap-4 text-[#0E1C29] font-semibold">
+            <li>Usage data (pages viewed, buttons clicked like Call / Message on Facebook, device info) via Google Analytics and Meta Pixel.</li>
+            <li>Messages you send us (e.g., via Facebook Messenger or forms).</li>
+            <li>School corrections/suggestions you submit.</li>
           </ul>
 
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
           <p className="text-[#0E1C29] font-semibold mb-6">
-            2. How We Use Your Information
+            2. Why we collect it
           </p>
-
           <p className="text-[#0E1C29] font-semibold mb-6">
-            We use the collected information for various purposes, including:
-          </p>
-
-          <ul className="list-disc list-inside mt-4 flex flex-col gap-6 text-[#0E1C29] font-semibold">
-            <li>Providing and maintaining the website</li>
-
-            <li>Communicating with you about your account and our services</li>
-
-            <li>
-              Sending newsletters, promotional materials, and other information
-              you request
-            </li>
-
-            <li>Analyzing website usage and improving our services</li>
-          </ul>
-
-          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">
-            3. Sharing Your Information
-          </p>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">
-            We do not sell, trade, or otherwise transfer your personal
-            information to third parties without your consent, except as
-            described in this Privacy Policy. We may share information with
-            trusted third-party service providers who assist us in operating our
-            website or conducting our business.
+            To operate and improve Aralya, fix issues, understand which pages/filters help parents, and respond to your requests.
           </p>
 
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
           <p className="text-[#0E1C29] font-semibold mb-6">
-            4. Cookies and Similar Technologies
+           3.  Sharing
           </p>
-
           <p className="text-[#0E1C29] font-semibold mb-6">
-            We use cookies and similar technologies to enhance your experience
-            on our website. You can control cookies through your browser
-            settings, but disabling them may affect your ability to use certain
-            features of the site.
-          </p>
-
-          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">5. Your Choices</p>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">
-            You can manage your communication preferences by unsubscribing from
-            newsletters or adjusting your account settings. You may also contact
-            us to update or delete your personal information.
-          </p>
-
-          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">6. Security</p>
-
-          <p className="text-[#0E1C29] font-semibold mb-6">
-            We take reasonable measures to protect the security of your personal
-            information. However, no method of transmission over the internet or
-            electronic storage is completely secure. Therefore, we cannot
-            guarantee absolute security.
+            We use trusted service providers (hosting, analytics). We don't sell your personal information.
           </p>
 
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
           <p className="text-[#0E1C29] font-semibold mb-6">
-            7. Children's Privacy
+            4. Cookies & analytics
           </p>
-
           <p className="text-[#0E1C29] font-semibold mb-6">
-            Our website is not directed to individuals under the age of 18. If
-            you become aware that a child has provided us with personal
-            information, please contact us, and we will take steps to remove
-            such information.
+            We use cookies to measure usage and improve the site. You can block cookies in your browser. See Google and Meta for how they use data from their tools.
           </p>
 
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
           <p className="text-[#0E1C29] font-semibold mb-6">
-            8. Changes to This Privacy Policy
+            5. Your choices
           </p>
-
           <p className="text-[#0E1C29] font-semibold mb-6">
-            We may update this Privacy Policy periodically. We will notify you
-            of any changes by posting the new Privacy Policy on this page. Your
-            continued use of the website after such modifications will
-            constitute your acknowledgment of the modified Privacy Policy.
+            Email hello@aralya.ph to request access, correction, or deletion of information you shared with us.
           </p>
 
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
-          <p className="text-[#0E1C29] font-semibold mb-6">9. Contact Us</p>
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            6. Data security
+          </p>
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            We use reputable providers and limit access. No method is 100% secure, but we work to protect your data.
+          </p>
+
+          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
 
           <p className="text-[#0E1C29] font-semibold mb-6">
-            If you have any questions about this Privacy Policy, please contact
-            us at alter@support.com
+            7. Children
+          </p>
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            Aralya is for parents/guardians. If you believe a child provided personal data here, contact us.
+          </p>
+
+          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
+
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            8. Updates
+          </p>
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            We may update this page and will change the Last updated date above.
+          </p>
+
+          <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
+
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            9. Contact
+          </p>
+          <p className="text-[#0E1C29] font-semibold mb-6">
+            Questions or requests: hello@aralya.ph
           </p>
         </div>
       </section>

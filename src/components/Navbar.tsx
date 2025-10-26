@@ -50,8 +50,8 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
           : "md:w-full w-[90%] md:bg-white/5 bg-[#774BE5] rounded-lg md:rounded-none"
       }`}
     >
-      <div className="flex items-center justify-between w-full">
-        <Link href="/" className="hidden md:block w-1/3">
+      <div className="flex items-center w-full">
+        <Link href="/" className="hidden md:block">
           {isScrolling && isDesktop ? (
             <Image
               src="/images/logo-white.png"
@@ -73,9 +73,7 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
         </div>
 
         <ul
-          className={`hidden md:flex items-center gap-20 font-semibold text-sm transition-all duration-500 ease-in-out ${
-            isScrolling && isDesktop ? "" : "justify-items-start w-2/3"
-          }`}
+          className={`hidden md:flex items-center justify-center gap-20 font-semibold text-sm transition-all duration-500 ease-in-out flex-1`}
         >
           <li
             className={`transition-colors duration-500 ease-in-out delay-100 ${

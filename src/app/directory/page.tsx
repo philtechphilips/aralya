@@ -22,6 +22,7 @@ import "aos/dist/aos.css";
 const SchoolDirectoryContent = () => {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
+  const cityQuery = searchParams.get("city") || "";
 
   const [displayedSchools, setDisplayedSchools] = useState<School[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,11 +30,12 @@ const SchoolDirectoryContent = () => {
   const [hasMore, setHasMore] = useState(true);
   const [filteredSchools, setFilteredSchools] = useState<School[]>([]);
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
-  const [searchResults, setSearchResults] = useState<School[]>([]);
+  const [searchResults, setSearchResults] = useState<string[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
   const [budgetFilter, setBudgetFilter] = useState("");
-  const [cityFilter, setCityFilter] = useState("");
+  const [cityFilter, setCityFilter] = useState(cityQuery);
+  const [curriculumFilter, setCurriculumFilter] = useState("");
   const [initialLoading, setInitialLoading] = useState(true);
   const observerRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLFormElement>(null);
@@ -88,21 +90,16 @@ const SchoolDirectoryContent = () => {
       .trim();
   };
 
-  // Enhanced search function using Supabase
-  const searchSchools = async (query: string) => {
+  // Enhanced search function for cities using Supabase
+  const searchCities = async (query: string) => {
     if (query.trim().length === 0) {
-      try {
-        return await SchoolService.getAllSchools();
-      } catch (error) {
-        console.error('Error loading all schools:', error);
-        return [];
-      }
+      return [];
     }
 
     try {
-      return await SchoolService.searchSchools(query.trim());
+      return await SchoolService.searchCities(query.trim());
     } catch (error) {
-      console.error('Error searching schools:', error);
+      console.error('Error searching cities:', error);
       return [];
     }
   };
@@ -113,9 +110,9 @@ const SchoolDirectoryContent = () => {
     setLocalSearchQuery(query);
 
     if (query.trim().length > 0) {
-      // Filter schools based on enhanced search using Supabase
-      const filtered = await searchSchools(query);
-      setSearchResults(filtered.slice(0, 3)); // Get top 3 results
+      // Search cities using Supabase
+      const filtered = await searchCities(query);
+      setSearchResults(filtered.slice(0, 5)); // Get top 5 city results
       setShowResults(true);
     } else {
       setSearchResults([]);
@@ -123,10 +120,9 @@ const SchoolDirectoryContent = () => {
     }
   };
 
-  // Handle clicking on a search result
-  const handleResultClick = (school: School) => {
-    const slug = createSlug(school.school_name);
-    window.location.href = `/directory/${slug}`;
+  // Handle clicking on a city search result
+  const handleCityClick = (city: string) => {
+    window.location.href = `/directory?city=${encodeURIComponent(city)}`;
   };
 
   // Initialize AOS and handle click outside
@@ -194,16 +190,31 @@ const SchoolDirectoryContent = () => {
         );
       }
 
+      // Apply curriculum filter
+      if (curriculumFilter) {
+        filtered = filtered.filter((school) => {
+          const curriculumTags = school.curriculum_tags.toLowerCase();
+          return curriculumTags.includes(curriculumFilter.toLowerCase());
+        });
+      }
+
       return filtered;
     },
-    [budgetFilter, cityFilter],
+    [budgetFilter, cityFilter, curriculumFilter],
   );
 
   // Filter schools based on search query and filters
   useEffect(() => {
     const loadFilteredSchools = async () => {
       try {
-        const searchFiltered = await searchSchools(searchQuery);
+        let searchFiltered;
+        if (searchQuery.trim().length > 0) {
+          // If there's a search query, search for schools in that city
+          searchFiltered = await SchoolService.getSchoolsByCity(searchQuery);
+        } else {
+          // Otherwise, get all schools
+          searchFiltered = await SchoolService.getAllSchools();
+        }
         const finalFiltered = applyFilters(searchFiltered);
         setFilteredSchools(finalFiltered);
       } catch (error) {
@@ -215,7 +226,7 @@ const SchoolDirectoryContent = () => {
     };
 
     loadFilteredSchools();
-  }, [searchQuery, budgetFilter, cityFilter, applyFilters]);
+  }, [searchQuery, budgetFilter, cityFilter, curriculumFilter, applyFilters]);
 
   // Load initial schools
   useEffect(() => {
@@ -315,7 +326,7 @@ const SchoolDirectoryContent = () => {
                   type="text"
                   value={localSearchQuery}
                   onChange={handleSearchChange}
-                  placeholder="Search by name, location, price, curriculum, programs..."
+                  placeholder="Search by city (e.g., Makati, Pasig, Quezon City)..."
                   className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
                 />
                 {localSearchQuery && (
@@ -339,45 +350,21 @@ const SchoolDirectoryContent = () => {
               <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl shadow-lg border border-gray-200 z-[99]">
                 <div className="p-4">
                   <h5 className="text-sm font-semibold text-gray-600 mb-3">
-                    Top {searchResults.length} result
-                    {searchResults.length !== 1 ? "s" : ""}
+                    Cities ({searchResults.length})
                   </h5>
-                  {searchResults.map((school, index) => (
+                  {searchResults.map((city, index) => (
                     <div
-                      key={`${school.school_name}-${index}`}
-                      onClick={() => handleResultClick(school)}
+                      key={`${city}-${index}`}
+                      onClick={() => handleCityClick(city)}
                       className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
                     >
-                      <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                        <Image
-                          src={school.logo_banner}
-                          alt={school.school_name}
-                          width={48}
-                          height={48}
-                          className="w-full h-full object-contain"
-                        />
+                      <div className="w-12 h-12 rounded-lg bg-[#774BE5]/10 flex items-center justify-center flex-shrink-0">
+                        <i className="ri-map-pin-line text-[#774BE5] text-xl"></i>
                       </div>
                       <div className="flex-1 min-w-0">
                         <h6 className="font-semibold text-[#0E1C29] text-sm truncate">
-                          {school.school_name}
+                          {city}
                         </h6>
-                        <p className="text-xs text-gray-600 truncate">
-                          {school.city} • {school.min_tuition} -{" "}
-                          {school.max_tuition}
-                        </p>
-                        <div className="flex flex-wrap gap-1 mt-1 w-full">
-                          {school.curriculum_tags
-                            .split(", ")
-                            .slice(0, 2)
-                            .map((tag: string, tagIndex: number) => (
-                              <div
-                                key={tagIndex}
-                                className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full"
-                              >
-                                {tag}
-                              </div>
-                            ))}
-                        </div>
                       </div>
                       <i className="ri-arrow-right-s-line text-gray-400"></i>
                     </div>
@@ -390,10 +377,10 @@ const SchoolDirectoryContent = () => {
       </section>
 
       <section className="w-full md:px-10 px-5 py-25 bg-white">
-        {searchQuery && (
+        {(searchQuery || cityQuery) && (
           <div className="mb-6">
             <h2 className="text-2xl font-semibold text-[#0E1C29] mb-2">
-              Search Results for &quot;{searchQuery}&quot;
+              {cityQuery ? `Schools in ${cityQuery}` : `Search Results for "${searchQuery}"`}
             </h2>
             <p className="text-gray-600">
               Found {filteredSchools.length} school
@@ -408,6 +395,9 @@ const SchoolDirectoryContent = () => {
               setActiveFilter("all");
               setBudgetFilter("");
               setCityFilter("");
+              setCurriculumFilter("");
+              // Clear URL parameters
+              window.history.replaceState({}, '', '/directory');
             }}
             className={`min-w-20 p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 ${
               activeFilter === "all"
@@ -507,6 +497,57 @@ const SchoolDirectoryContent = () => {
                       }`}
                     >
                       {city}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="relative filter-dropdown z-[100]">
+            <button
+              onClick={() =>
+                setActiveFilter(activeFilter === "curriculum" ? "all" : "curriculum")
+              }
+              className={`md:w-fit min-w-20 p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 ${
+                activeFilter === "curriculum"
+                  ? "bg-[#774BE5] text-white"
+                  : "bg-white text-black hover:bg-gray-50"
+              }`}
+            >
+              Curriculum
+              <i className="ri-arrow-down-s-line text-sm"></i>
+            </button>
+
+            {activeFilter === "curriculum" && (
+              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-[9999] min-w-48">
+                <div className="p-2">
+                  {[
+                    "DepEd",
+                    "Montessori",
+                    "International",
+                    "Christian",
+                    "Catholic",
+                    "Progressive",
+                    "Waldorf",
+                    "Reggio Emilia",
+                    "IB",
+                    "Cambridge",
+                  ].map((curriculum) => (
+                    <button
+                      key={curriculum}
+                      onClick={() => {
+                        setCurriculumFilter(
+                          curriculumFilter === curriculum ? "" : curriculum,
+                        );
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-gray-100 text-gray-700 ${
+                        curriculumFilter === curriculum
+                          ? "bg-[#774BE5] hover:bg-[#774BE5]/80 text-white hover:text-[#774BE5]"
+                          : "hover:text-[#774BE5] text-black"
+                      }`}
+                    >
+                      {curriculum}
                     </button>
                   ))}
                 </div>

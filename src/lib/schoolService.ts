@@ -177,4 +177,26 @@ export class SchoolService {
     
     return [...new Set(allTags)].sort()
   }
+
+  // Search cities by query
+  static async searchCities(query: string): Promise<string[]> {
+    if (query.trim().length === 0) {
+      return await this.getUniqueCities()
+    }
+
+    const { data, error } = await supabase
+      .from('schools')
+      .select('city')
+      .ilike('city', `%${query}%`)
+      .order('city')
+    
+    if (error) {
+      console.error('Error searching cities:', error)
+      throw error
+    }
+    
+    // Extract unique cities from results
+    const uniqueCities = [...new Set(data?.map(item => item.city) || [])]
+    return uniqueCities
+  }
 }

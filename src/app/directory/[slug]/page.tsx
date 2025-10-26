@@ -184,6 +184,17 @@ const SchoolDetails = () => {
 
       {/* Main Content */}
       <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 mt-28">
+        {/* Back to Directory Button */}
+        <div className="w-full mb-4">
+          <Link
+            href="/directory"
+            className="inline-flex items-center gap-2 text-[#774BE5] hover:text-[#6B3FD6] transition-colors font-medium"
+          >
+            <i className="ri-arrow-left-line text-lg"></i>
+            Back to Directory
+          </Link>
+        </div>
+
         {/* Header */}
         <div className="rounded-[16px] bg-white p-4 flex md:flex-row flex-col gap-4 md:items-center w-full">
           <div className="w-80 h-50 bg-gray-200 border border-gray-200 rounded-[10px] overflow-hidden">

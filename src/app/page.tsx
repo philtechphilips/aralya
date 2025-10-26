@@ -12,13 +12,12 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<School[]>([]);
+  const [searchResults, setSearchResults] = useState<string[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [featuredSchools, setFeaturedSchools] = useState<School[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,15 +53,15 @@ export default function Home() {
       .trim();
   };
 
-  // Enhanced search function using Supabase
-  const searchSchools = async (query: string) => {
+  // Enhanced search function for cities using Supabase
+  const searchCities = async (query: string) => {
     if (query.trim().length === 0) return [];
 
     try {
-      const results = await SchoolService.searchSchools(query.trim());
-      return results.slice(0, 3); // Get top 3 results
+      const results = await SchoolService.searchCities(query.trim());
+      return results.slice(0, 5); // Get top 5 city results
     } catch (error) {
-      console.error('Error searching schools:', error);
+      console.error('Error searching cities:', error);
       return [];
     }
   };
@@ -75,8 +74,8 @@ export default function Home() {
     if (query.trim().length > 0) {
       setSearchLoading(true);
       setShowResults(true);
-      // Search schools using Supabase
-      const filtered = await searchSchools(query);
+      // Search cities using Supabase
+      const filtered = await searchCities(query);
       setSearchResults(filtered);
       setSearchLoading(false);
     } else {
@@ -90,9 +89,9 @@ export default function Home() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Redirect to directory with search query
+      // Redirect to directory with city filter
       router.push(
-        `/directory?search=${encodeURIComponent(searchQuery.trim())}`,
+        `/directory?city=${encodeURIComponent(searchQuery.trim())}`,
       );
     } else {
       // If no search query, go to directory
@@ -100,10 +99,9 @@ export default function Home() {
     }
   };
 
-  // Handle clicking on a search result
-  const handleResultClick = (school: School) => {
-    const slug = createSlug(school.school_name);
-    router.push(`/directory/${slug}`);
+  // Handle clicking on a city search result
+  const handleCityClick = (city: string) => {
+    router.push(`/directory?city=${encodeURIComponent(city)}`);
   };
 
   // Initialize AOS and handle click outside
@@ -164,7 +162,7 @@ export default function Home() {
                     type="text"
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    placeholder="Search by name, location, price, curriculum, programs..."
+                    placeholder="Search by city (e.g., Makati, Pasig, Quezon City)..."
                     className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
                   />
                   {searchQuery && (
@@ -241,18 +239,18 @@ export default function Home() {
             ref={searchRef}
           >
             <h4 className="text-[#0F0F0F] md:text-2xl text-base font-medium">
-              Search schools around Philippines
+            Search schools around Metro Manila
             </h4>
             <div className="flex flex-col md:flex-row md:mt-6 mt-3 gap-2.5 rounded-2xl">
               <div className="bg-[#f5f5f5] w-full md:w-[710px] p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-5 relative">
                 <i className="ri-search-line text-[#0E1C29]/40 text-2xl"></i>
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  placeholder="Search by name, location, price, curriculum, programs..."
-                  className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
-                />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    placeholder="Search by city (e.g., Makati, Pasig, Quezon City)..."
+                    className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
+                  />
                 {searchQuery && (
                   <button
                     type="button"
@@ -306,45 +304,21 @@ export default function Home() {
                   ) : searchResults.length > 0 ? (
                     <>
                       <h5 className="text-sm font-semibold text-gray-600 mb-3">
-                        Top {searchResults.length} result
-                        {searchResults.length !== 1 ? "s" : ""}
+                        Cities ({searchResults.length})
                       </h5>
-                      {searchResults.map((school, index) => (
+                      {searchResults.map((city, index) => (
                         <div
-                          key={`${school.school_name}-${index}`}
-                          onClick={() => handleResultClick(school)}
+                          key={`${city}-${index}`}
+                          onClick={() => handleCityClick(city)}
                           className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
                         >
-                          <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                            <Image
-                              src={school.logo_banner}
-                              alt={school.school_name}
-                              width={48}
-                              height={48}
-                              className="w-full h-full object-contain"
-                            />
+                          <div className="w-12 h-12 rounded-lg bg-[#774BE5]/10 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-map-pin-line text-[#774BE5] text-xl"></i>
                           </div>
                           <div className="flex-1 min-w-0">
                             <h6 className="font-semibold text-[#0E1C29] text-sm truncate">
-                              {school.school_name}
+                              {city}
                             </h6>
-                            <p className="text-xs text-gray-600 truncate">
-                              {school.city} • {school.min_tuition} -{" "}
-                              {school.max_tuition}
-                            </p>
-                            <div className="flex gap-1 mt-1">
-                              {school.curriculum_tags
-                                .split(", ")
-                                .slice(0, 2)
-                                .map((tag: string, tagIndex: number) => (
-                                  <span
-                                    key={tagIndex}
-                                    className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full"
-                                  >
-                                    {tag}
-                                  </span>
-                                ))}
-                            </div>
                           </div>
                           <i className="ri-arrow-right-s-line text-gray-400"></i>
                         </div>
@@ -352,7 +326,7 @@ export default function Home() {
                     </>
                   ) : (
                     <div className="text-center py-4">
-                      <p className="text-gray-500 text-sm">No schools found</p>
+                      <p className="text-gray-500 text-sm">No cities found</p>
                     </div>
                   )}
                 </div>

@@ -34,7 +34,7 @@ const TermsOfServices = () => {
             2. Acceptable use
           </p>
           <p className="text-[#0E1C29] font-semibold mb-6">
-            Don't attempt to damage, disrupt, or misuse the site. Don't submit unlawful, abusive, or misleading information.
+            Don&apos;t attempt to damage, disrupt, or misuse the site. Don&apos;t submit unlawful, abusive, or misleading information.
           </p>
 
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
@@ -61,7 +61,7 @@ const TermsOfServices = () => {
             5. Links & third parties
           </p>
           <p className="text-[#0E1C29] font-semibold mb-6">
-            We link to third-party sites (e.g., Facebook/Messenger, school websites). We're not responsible for their content or policies.
+            We link to third-party sites (e.g., Facebook/Messenger, school websites). We&apos;re not responsible for their content or policies.
           </p>
 
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>
@@ -70,7 +70,7 @@ const TermsOfServices = () => {
             6. Disclaimer & limitation of liability
           </p>
           <p className="text-[#0E1C29] font-semibold mb-6">
-            Information may change and may contain errors. Aralya is provided "as is". To the extent allowed by law, we are not liable for indirect, incidental, or consequential damages.
+            Information may change and may contain errors. Aralya is provided &quot;as is&quot;. To the extent allowed by law, we are not liable for indirect, incidental, or consequential damages.
           </p>
 
           <div className="w-full h-0.25 bg-[#d3d3d3] mt-4 mb-4"></div>

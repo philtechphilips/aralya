@@ -156,13 +156,13 @@ export default function Home() {
                 Search schools around Philippines
               </h4>
               <div className="flex flex-col md:flex-row md:mt-6 mt-3 gap-2.5 rounded-2xl">
-                <div className="bg-[#f5f5f5] w-full md:w-[710px] p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-5 relative">
-                  <i className="ri-search-line text-[#0E1C29]/40 text-2xl"></i>
+                <div className="bg-[#f5f5f5] w-full md:w-[710px] p-3 md:p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-3 md:gap-5 relative">
+                  <i className="ri-search-line text-[#0E1C29]/40 text-xl md:text-2xl"></i>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    placeholder="Search by city (e.g., Makati, Pasig, Quezon City)..."
+                    placeholder="Search schools around Metro Manila"
                     className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
                   />
                   {searchQuery && (
@@ -242,13 +242,13 @@ export default function Home() {
             Search schools around Metro Manila
             </h4>
             <div className="flex flex-col md:flex-row md:mt-6 mt-3 gap-2.5 rounded-2xl">
-              <div className="bg-[#f5f5f5] w-full md:w-[710px] p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-5 relative">
-                <i className="ri-search-line text-[#0E1C29]/40 text-2xl"></i>
+              <div className="bg-[#f5f5f5] w-full md:w-[710px] p-3 md:p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-3 md:gap-5 relative">
+                <i className="ri-search-line text-[#0E1C29]/40 text-xl md:text-2xl"></i>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    placeholder="Search by city (e.g., Makati, Pasig, Quezon City)..."
+                    placeholder="Search by city..."
                     className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
                   />
                 {searchQuery && (
@@ -276,8 +276,8 @@ export default function Home() {
 
             {/* Search Results Dropdown */}
             {showResults && (
-              <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl shadow-lg border border-gray-200 z-50">
-                <div className="p-4">
+              <div className="absolute top-full left-2 right-2 md:left-5 md:right-5 mt-2 bg-white rounded-2xl shadow-xl border border-gray-200 z-50 max-h-80 overflow-y-auto">
+                <div className="p-3 md:p-4">
                   {searchLoading ? (
                     <>
                       <div className="animate-pulse">
@@ -287,14 +287,10 @@ export default function Home() {
                             key={index}
                             className="flex items-center gap-3 p-3 mb-2"
                           >
-                            <div className="w-12 h-12 bg-gray-200 rounded-lg flex-shrink-0"></div>
+                            <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-200 rounded-xl flex-shrink-0"></div>
                             <div className="flex-1 space-y-2">
                               <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                               <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                              <div className="flex gap-1">
-                                <div className="h-5 bg-gray-200 rounded-full w-16"></div>
-                                <div className="h-5 bg-gray-200 rounded-full w-20"></div>
-                              </div>
                             </div>
                             <div className="w-4 h-4 bg-gray-200 rounded"></div>
                           </div>
@@ -303,30 +299,39 @@ export default function Home() {
                     </>
                   ) : searchResults.length > 0 ? (
                     <>
-                      <h5 className="text-sm font-semibold text-gray-600 mb-3">
+                      <h5 className="text-sm font-semibold text-gray-600 mb-3 px-1">
                         Cities ({searchResults.length})
                       </h5>
-                      {searchResults.map((city, index) => (
-                        <div
-                          key={`${city}-${index}`}
-                          onClick={() => handleCityClick(city)}
-                          className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
-                        >
-                          <div className="w-12 h-12 rounded-lg bg-[#774BE5]/10 flex items-center justify-center flex-shrink-0">
-                            <i className="ri-map-pin-line text-[#774BE5] text-xl"></i>
+                      <div className="space-y-1">
+                        {searchResults.map((city, index) => (
+                          <div
+                            key={`${city}-${index}`}
+                            onClick={() => handleCityClick(city)}
+                            className="flex items-center gap-3 p-3 md:p-3 hover:bg-gray-50 active:bg-gray-100 rounded-xl cursor-pointer transition-all duration-200 touch-manipulation"
+                          >
+                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#774BE5]/10 flex items-center justify-center flex-shrink-0">
+                              <i className="ri-map-pin-line text-[#774BE5] text-lg md:text-xl"></i>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h6 className="font-semibold text-[#0E1C29] text-sm md:text-sm truncate">
+                                {city}
+                              </h6>
+                              <p className="text-xs text-gray-500 mt-0.5">
+                                Tap to view schools
+                              </p>
+                            </div>
+                            <i className="ri-arrow-right-s-line text-gray-400 text-lg"></i>
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <h6 className="font-semibold text-[#0E1C29] text-sm truncate">
-                              {city}
-                            </h6>
-                          </div>
-                          <i className="ri-arrow-right-s-line text-gray-400"></i>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </>
                   ) : (
-                    <div className="text-center py-4">
+                    <div className="text-center py-6">
+                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 flex items-center justify-center">
+                        <i className="ri-search-line text-gray-400 text-xl"></i>
+                      </div>
                       <p className="text-gray-500 text-sm">No cities found</p>
+                      <p className="text-gray-400 text-xs mt-1">Try a different search term</p>
                     </div>
                   )}
                 </div>

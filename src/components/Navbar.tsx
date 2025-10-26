@@ -50,7 +50,7 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
           : "md:w-full w-[90%] md:bg-white/5 bg-[#774BE5] rounded-lg md:rounded-none"
       }`}
     >
-      <div className="flex items-center w-full">
+      <div className="flex items-center justify-between w-full">
         <Link href="/" className="hidden md:block">
           {isScrolling && isDesktop ? (
             <Image

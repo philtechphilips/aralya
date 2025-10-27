@@ -176,7 +176,7 @@ const SchoolDetails = () => {
   }
 
   return (
-    <section className="w-full bg-[#F9FAFB] flex flex-col items-center pb-40 px-5">
+    <section className="w-full bg-[#EFE8FF] flex flex-col items-center pb-40 px-5">
       {/* Navbar */}
       <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0">
         <Navbar textColor="black" />
@@ -216,6 +216,7 @@ const SchoolDetails = () => {
                 {school?.city || "City"}
               </p>
             </div>
+            {school?.website && (
             <div className="flex items-center my-1">
               <i className="ri-global-line text-[#774BE5] text-lg"></i>
               <a 
@@ -227,6 +228,7 @@ const SchoolDetails = () => {
                 Official website ↗
               </a>
             </div>
+            )}
             <div className="bg-[#774BE5] rounded-lg px-4 py-2 w-fit">
               <p className="text-white font-semibold text-sm">
                 {school?.min_tuition || "N/A"} - {school?.max_tuition || "N/A"}

@@ -17,7 +17,7 @@ import "aos/dist/aos.css";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [searchResults, setSearchResults] = useState<{ city: string; schoolCount: number }[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [featuredSchools, setFeaturedSchools] = useState<School[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +32,7 @@ export default function Home() {
         const schools = await SchoolService.getFeaturedSchools();
         setFeaturedSchools(schools);
       } catch (error) {
-        console.error('Error loading featured schools:', error);
+        console.error("Error loading featured schools:", error);
         // Fallback to empty array or show error message
         setFeaturedSchools([]);
       } finally {
@@ -61,7 +61,7 @@ export default function Home() {
       const results = await SchoolService.searchCities(query.trim());
       return results.slice(0, 5); // Get top 5 city results
     } catch (error) {
-      console.error('Error searching cities:', error);
+      console.error("Error searching cities:", error);
       return [];
     }
   };
@@ -88,13 +88,14 @@ export default function Home() {
   // Handle search functionality
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Search triggered with query:", searchQuery);
     if (searchQuery.trim()) {
       // Redirect to directory with city filter
-      router.push(
-        `/directory?city=${encodeURIComponent(searchQuery.trim())}`,
-      );
+      console.log("Redirecting to directory with city:", searchQuery.trim());
+      router.push(`/directory?city=${encodeURIComponent(searchQuery.trim())}`);
     } else {
       // If no search query, go to directory
+      console.log("Redirecting to directory without city filter");
       router.push("/directory");
     }
   };
@@ -144,10 +145,11 @@ export default function Home() {
               Find the Right Preschool for Your Little One{" "}
             </h1>
             <p className="mt-6 text-white text-sm md:px-50 px-5 text-center">
-              Easily compare tuition, programs, and nearby locations from trusted
-              preschools in Metro Manila — no sign-ups, no stress
+              Easily compare tuition, programs, and nearby locations from
+              trusted preschools in Metro Manila — no sign-ups, no stress
             </p>
             <form
+              id="search-form"
               onSubmit={handleSearch}
               className="bg-white w-full p-5 rounded-3xl mt-6 relative"
               ref={searchRef}
@@ -179,13 +181,15 @@ export default function Home() {
                     </button>
                   )}
                 </div>
-                <Link
-                  href="/directory"
+                <button
+                  type="submit"
+                  form="search-form-mobile"
+                  onClick={handleSearch}
                   className="bg-[#774BE5] md:w-fit w-full text-white p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 hover:bg-[#6B3FD6] transition-colors"
                 >
-                  View all schools
-                  <i className="ri-arrow-right-fill text-white text-lg mt-0.5"></i>
-                </Link>
+                  Search
+                  <i className="ri-search-line text-white text-lg mt-0.5"></i>
+                </button>
               </div>
             </form>
           </div>
@@ -234,23 +238,24 @@ export default function Home() {
             preschools in Metro Manila — no sign-ups, no stress
           </p>
           <form
+            id="search-form-mobile"
             onSubmit={handleSearch}
             className="bg-white w-full p-5 rounded-3xl mt-6 relative"
             ref={searchRef}
           >
             <h4 className="text-[#0F0F0F] md:text-2xl text-base font-medium">
-            Search schools around Metro Manila
+              Search schools around Metro Manila
             </h4>
             <div className="flex flex-col md:flex-row md:mt-6 mt-3 gap-2.5 rounded-2xl">
-              <div className="bg-[#f5f5f5] w-full md:w-[710px] p-3 md:p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-3 md:gap-5 relative">
+              <div className="bg-[#f5f5f5] w-full md:w-[810px] p-3 md:p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-3 md:gap-5 relative">
                 <i className="ri-search-line text-[#0E1C29]/40 text-xl md:text-2xl"></i>
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    placeholder="Search by city..."
-                    className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
-                  />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  placeholder="Search by city..."
+                  className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
+                />
                 {searchQuery && (
                   <button
                     type="button"
@@ -265,13 +270,15 @@ export default function Home() {
                   </button>
                 )}
               </div>
-              <Link
-                href="/directory"
+              <button
+                type="submit"
+                form="search-form"
+                onClick={handleSearch}
                 className="bg-[#774BE5] md:w-fit w-full text-white p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 hover:bg-[#6B3FD6] transition-colors"
               >
-                View all schools
-                <i className="ri-arrow-right-fill text-white text-lg mt-0.5"></i>
-              </Link>
+                Search
+                <i className="ri-search-line text-white text-lg mt-0.5"></i>
+              </button>
             </div>
 
             {/* Search Results Dropdown */}
@@ -303,10 +310,10 @@ export default function Home() {
                         Cities ({searchResults.length})
                       </h5>
                       <div className="space-y-1">
-                        {searchResults.map((city, index) => (
+                        {searchResults.map((cityData, index) => (
                           <div
-                            key={`${city}-${index}`}
-                            onClick={() => handleCityClick(city)}
+                            key={`${cityData.city}-${index}`}
+                            onClick={() => handleCityClick(cityData.city)}
                             className="flex items-center gap-3 p-3 md:p-3 hover:bg-gray-50 active:bg-gray-100 rounded-xl cursor-pointer transition-all duration-200 touch-manipulation"
                           >
                             <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#774BE5]/10 flex items-center justify-center flex-shrink-0">
@@ -314,10 +321,10 @@ export default function Home() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <h6 className="font-semibold text-[#0E1C29] text-sm md:text-sm truncate">
-                                {city}
+                                {cityData.city}
                               </h6>
                               <p className="text-xs text-gray-500 mt-0.5">
-                                Tap to view schools
+                                {cityData.schoolCount} {cityData.schoolCount === 1 ? 'school' : 'schools'} available
                               </p>
                             </div>
                             <i className="ri-arrow-right-s-line text-gray-400 text-lg"></i>
@@ -331,7 +338,9 @@ export default function Home() {
                         <i className="ri-search-line text-gray-400 text-xl"></i>
                       </div>
                       <p className="text-gray-500 text-sm">No cities found</p>
-                      <p className="text-gray-400 text-xs mt-1">Try a different search term</p>
+                      <p className="text-gray-400 text-xs mt-1">
+                        Try a different search term
+                      </p>
                     </div>
                   )}
                 </div>
@@ -472,3 +481,4 @@ export default function Home() {
     </>
   );
 }
+

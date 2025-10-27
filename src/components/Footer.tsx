@@ -7,12 +7,14 @@ const Footer = () => {
     <section className="w-full flex flex-col px-10 py-16 bg-[#774BE5]">
       <div className="w-full flex md:flex-col flex-col-reverse gap-10">
         <div className="flex items-center justify-between">
+          <Link href="/">
           <Image
             src="/images/logo-white.png"
             alt="logo"
             width={100}
             height={100}
           />
+          </Link>
           <div className="flex items-center gap-2">
             <Link
               href="https://www.instagram.com/hello.aralya/?fbclid=IwY2xjawNi6ZNleHRuA2FlbQIxMQBicmlkETFtQzZWdlZ5NXpPMDNpYkJMAR6K2jgVdxDYAKxtyPbjdimUQRAcxd9TjB-QOkfa50PY4S48iIxo6ew11J6hVg_aem_GJNOU2znrChkHLGCQPzJYg"

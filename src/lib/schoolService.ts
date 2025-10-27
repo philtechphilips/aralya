@@ -178,10 +178,32 @@ export class SchoolService {
     return [...new Set(allTags)].sort()
   }
 
-  // Search cities by query
-  static async searchCities(query: string): Promise<string[]> {
+  // Get school count by city
+  static async getSchoolCountByCity(city: string): Promise<number> {
+    const { count, error } = await supabase
+      .from('schools')
+      .select('*', { count: 'exact', head: true })
+      .eq('city', city)
+    
+    if (error) {
+      console.error('Error getting school count by city:', error)
+      throw error
+    }
+    
+    return count || 0
+  }
+
+  // Search cities by query with school counts
+  static async searchCities(query: string): Promise<{ city: string; schoolCount: number }[]> {
     if (query.trim().length === 0) {
-      return await this.getUniqueCities()
+      const cities = await this.getUniqueCities()
+      const citiesWithCounts = await Promise.all(
+        cities.map(async (city) => ({
+          city,
+          schoolCount: await this.getSchoolCountByCity(city)
+        }))
+      )
+      return citiesWithCounts
     }
 
     const { data, error } = await supabase
@@ -197,6 +219,15 @@ export class SchoolService {
     
     // Extract unique cities from results
     const uniqueCities = [...new Set(data?.map(item => item.city) || [])]
-    return uniqueCities
+    
+    // Get school counts for each city
+    const citiesWithCounts = await Promise.all(
+      uniqueCities.map(async (city) => ({
+        city,
+        schoolCount: await this.getSchoolCountByCity(city)
+      }))
+    )
+    
+    return citiesWithCounts
   }
 }

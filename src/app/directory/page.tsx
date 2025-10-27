@@ -28,7 +28,7 @@ const SchoolDirectoryContent = () => {
   const [hasMore, setHasMore] = useState(true);
   const [filteredSchools, setFilteredSchools] = useState<School[]>([]);
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
-  const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [searchResults, setSearchResults] = useState<{ city: string; schoolCount: number }[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
   const [budgetFilter, setBudgetFilter] = useState("");
@@ -369,10 +369,10 @@ const SchoolDirectoryContent = () => {
                   <h5 className="text-sm font-semibold text-gray-600 mb-3">
                     Cities ({searchResults.length})
                   </h5>
-                  {searchResults.map((city, index) => (
+                  {searchResults.map((cityData, index) => (
                     <div
-                      key={`${city}-${index}`}
-                      onClick={() => handleCityClick(city)}
+                      key={`${cityData.city}-${index}`}
+                      onClick={() => handleCityClick(cityData.city)}
                       className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
                     >
                       <div className="w-12 h-12 rounded-lg bg-[#774BE5]/10 flex items-center justify-center flex-shrink-0">
@@ -380,8 +380,11 @@ const SchoolDirectoryContent = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h6 className="font-semibold text-[#0E1C29] text-sm truncate">
-                          {city}
+                          {cityData.city}
                         </h6>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {cityData.schoolCount} {cityData.schoolCount === 1 ? 'school' : 'schools'} available
+                        </p>
                       </div>
                       <i className="ri-arrow-right-s-line text-gray-400"></i>
                     </div>

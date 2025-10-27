@@ -18,6 +18,8 @@ const SchoolDetails = () => {
   const [coords, setCoords] = useState<{ lat: string; lon: string } | null>(
     null,
   );
+  const [mapLoading, setMapLoading] = useState(true);
+  const [mapError, setMapError] = useState(false);
 
   // Load school data from Supabase
   useEffect(() => {
@@ -45,23 +47,73 @@ const SchoolDetails = () => {
     loadSchool();
   }, [slug]);
 
-  // Fetch city coordinates from OpenStreetMap
+  // Fetch coordinates from OpenStreetMap
   useEffect(() => {
     if (!school) return;
 
     async function fetchCoords() {
+      setMapLoading(true);
+      setMapError(false);
       try {
+        // Prioritize location field, fallback to city if location is null/empty
+        let searchQuery = "Philippines"; // Default fallback
+        
+        if (school?.location && school.location.trim() !== "") {
+          // Use specific location/address if available
+          searchQuery = `${school.location}, Philippines`;
+        } else if (school?.city && school.city.trim() !== "") {
+          // Fallback to city if location is not available
+          searchQuery = `${school.city}, Philippines`;
+        }
+        
+        console.log('Searching for coordinates:', searchQuery);
+        
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-            school?.city ?? "philippines",
-          )}`,
+            searchQuery
+          )}&limit=1&addressdetails=1`,
         );
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
         const data = await res.json();
-        if (data.length > 0) {
+        console.log('Geocoding response:', data);
+        
+        if (data && data.length > 0) {
           setCoords({ lat: data[0].lat, lon: data[0].lon });
+        } else {
+          console.warn('No coordinates found for:', searchQuery);
+          // Try a more general search if specific location failed
+          if (school?.location && school.location.trim() !== "") {
+            console.log('Trying fallback to city search...');
+            const fallbackQuery = school?.city ? `${school.city}, Philippines` : "Philippines";
+            const fallbackRes = await fetch(
+              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+                fallbackQuery
+              )}&limit=1&addressdetails=1`,
+            );
+            
+            if (fallbackRes.ok) {
+              const fallbackData = await fallbackRes.json();
+              if (fallbackData && fallbackData.length > 0) {
+                setCoords({ lat: fallbackData[0].lat, lon: fallbackData[0].lon });
+                return;
+              }
+            }
+          }
+          
+          // Final fallback to a default location in the Philippines
+          setCoords({ lat: "14.5995", lon: "120.9842" }); // Manila coordinates
         }
       } catch (error) {
         console.error("Error fetching coordinates:", error);
+        setMapError(true);
+        // Fallback to a default location in the Philippines
+        setCoords({ lat: "14.5995", lon: "120.9842" }); // Manila coordinates
+      } finally {
+        setMapLoading(false);
       }
     }
     fetchCoords();
@@ -407,9 +459,9 @@ const SchoolDetails = () => {
 
         {/* Map */}
         <div className="w-full mt-10 rounded-3xl">
-          {coords ? (
+          {coords && !mapLoading ? (
             <iframe
-              title={`Map of ${school?.city || "Location"}`}
+              title={`Map of ${school?.location || school?.city || "Location"}`}
               width="100%"
               height="450"
               loading="lazy"
@@ -418,8 +470,27 @@ const SchoolDetails = () => {
               style={{ border: 0 }}
               className="rounded-3xl"
             ></iframe>
+          ) : mapError ? (
+            <div className="w-full h-[450px] bg-red-50 rounded-3xl flex items-center justify-center border border-red-200">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <i className="ri-map-pin-line text-red-500 text-2xl"></i>
+                </div>
+                <p className="text-red-600 font-medium mb-2">Map unavailable</p>
+                <p className="text-red-500 text-sm">
+                  Unable to load map for {school?.location || school?.city || "this location"}
+                </p>
+              </div>
+            </div>
           ) : (
-            <p className="text-center text-gray-600">Loading map...</p>
+            <div className="w-full h-[450px] bg-gray-100 rounded-3xl flex items-center justify-center">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#774BE5] mx-auto mb-4"></div>
+                <p className="text-gray-600">
+                  {mapLoading ? `Loading map for ${school?.location || school?.city || "location"}...` : "Preparing map..."}
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </div>

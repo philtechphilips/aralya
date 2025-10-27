@@ -34,4 +34,5 @@ export interface School {
   curriculum_tags: string
   created_at?: string
   updated_at?: string
+  location?: string
 }

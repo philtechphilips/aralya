@@ -291,12 +291,11 @@ const SchoolDirectoryContent = () => {
     loadFilteredSchools();
   }, [searchQuery, budgetFilter, cityFilter, curriculumFilter, applyFilters]);
 
-  // Load initial schools
+  // Load all schools at once (no pagination needed)
   useEffect(() => {
-    const initialSchools = filteredSchools.slice(0, schoolsPerPage);
-    setDisplayedSchools(initialSchools);
+    setDisplayedSchools(filteredSchools);
     setCurrentPage(1);
-    setHasMore(filteredSchools.length > schoolsPerPage);
+    setHasMore(false);
   }, [filteredSchools]);
 
   // Load more schools function

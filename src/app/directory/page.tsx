@@ -13,7 +13,7 @@ import React, {
   Suspense,
 } from "react";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
+
 
 
 // Component that uses useSearchParams - needs to be wrapped in Suspense
@@ -108,15 +108,61 @@ const SchoolDirectoryContent = () => {
     const query = e.target.value;
     setLocalSearchQuery(query);
 
-    if (query.trim().length > 0) {
-      // Search cities using Supabase
-      const filtered = await searchCities(query);
-      setSearchResults(filtered.slice(0, 5)); // Get top 5 city results
+    // When empty, show all cities
+    if (query.trim().length === 0) {
+      let allCities = await searchCities("");
+      // Fallback: derive cities client-side if none returned
+      if (!allCities || allCities.length === 0) {
+        try {
+          const allSchools = await SchoolService.getAllSchools();
+          const cityToCount: Record<string, number> = {};
+          allSchools.forEach((s) => {
+            s.city.split(",").map((c) => c.trim()).forEach((c) => {
+              if (!c) return;
+              cityToCount[c] = (cityToCount[c] || 0) + 1;
+            });
+          });
+          allCities = Object.entries(cityToCount)
+            .map(([city, schoolCount]) => ({ city, schoolCount }))
+            .sort((a, b) => a.city.localeCompare(b.city));
+        } catch (err) {
+          console.error('Fallback city derivation failed:', err);
+        }
+      }
+      setSearchResults(allCities || []);
       setShowResults(true);
-    } else {
-      setSearchResults([]);
-      setShowResults(false);
+      return;
     }
+
+    // Otherwise, filter by query
+    const filtered = await searchCities(query);
+    setSearchResults(filtered);
+    setShowResults(true);
+  };
+
+  // Show all cities when input gains focus/clicked
+  const handleSearchFocus = async () => {
+    let allCities = await searchCities("");
+    // Fallback: derive cities client-side if none returned
+    if (!allCities || allCities.length === 0) {
+      try {
+        const allSchools = await SchoolService.getAllSchools();
+        const cityToCount: Record<string, number> = {};
+        allSchools.forEach((s) => {
+          s.city.split(",").map((c) => c.trim()).forEach((c) => {
+            if (!c) return;
+            cityToCount[c] = (cityToCount[c] || 0) + 1;
+          });
+        });
+        allCities = Object.entries(cityToCount)
+          .map(([city, schoolCount]) => ({ city, schoolCount }))
+          .sort((a, b) => a.city.localeCompare(b.city));
+      } catch (err) {
+        console.error('Fallback city derivation failed:', err);
+      }
+    }
+    setSearchResults(allCities || []);
+    setShowResults(true);
   };
 
   // Handle clicking on a city search result
@@ -140,7 +186,7 @@ const SchoolDirectoryContent = () => {
     window.addEventListener('resize', checkMobile);
     
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  }, [isMobile, activeFilter]);
 
   // Handle click outside
   useEffect(() => {
@@ -217,7 +263,7 @@ const SchoolDirectoryContent = () => {
 
       return filtered;
     },
-    [budgetFilter, cityFilter, curriculumFilter],
+    [budgetFilter, cityFilter, curriculumFilter, isSchoolInCity],
   );
 
   // Filter schools based on search query and filters
@@ -332,6 +378,8 @@ const SchoolDirectoryContent = () => {
           <h1 className="md:text-[56px] text-[32px] font-regular text-white text-center leading-[120%]">
             Find Preschools
           </h1>
+          <p className="text-gray-100 text-sm flex items-center gap-1"><span className="font-semibold">Now listing:</span> Taguig <i className="ri-checkbox-blank-circle-fill text-[6px] mt-1"></i> Makati <i className="ri-checkbox-blank-circle-fill text-[6px] mt-1"></i> Pasig <i className="ri-checkbox-blank-circle-fill text-[6px] mt-1"></i> Mandaluyong <i className="ri-checkbox-blank-circle-fill text-[6px] mt-1"></i> Quezon City <i className="ri-checkbox-blank-circle-fill text-[6px] mt-1"></i> Laguna</p>
+          <p className="text-gray-100 text-sm font-normal mt-1">We&apos;re still adding more schools each week.</p>
           <form
             className="bg-white w-full md:rounded-3xl rounded-full mt-6 relative"
             ref={searchRef}
@@ -343,6 +391,7 @@ const SchoolDirectoryContent = () => {
                   type="text"
                   value={localSearchQuery}
                   onChange={handleSearchChange}
+                  onFocus={handleSearchFocus}
                   placeholder="Search schools around Metro Manila"
                   className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
                 />
@@ -363,13 +412,15 @@ const SchoolDirectoryContent = () => {
             </div>
 
             {/* Search Results Dropdown */}
-            {showResults && searchResults.length > 0 && (
-              <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl border border-gray-200 z-[99]">
+            {showResults && (
+              <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl border border-gray-200 z-[99] max-h-80 overflow-auto">
                 <div className="p-4">
                   <h5 className="text-sm font-semibold text-gray-600 mb-3">
                     Cities ({searchResults.length})
                   </h5>
-                  {searchResults.map((cityData, index) => (
+                  {searchResults.length === 0 ? (
+                    <div className="text-sm text-gray-500 p-2">No cities found</div>
+                  ) : searchResults.map((cityData, index) => (
                     <div
                       key={`${cityData.city}-${index}`}
                       onClick={() => handleCityClick(cityData.city)}
@@ -474,8 +525,9 @@ const SchoolDirectoryContent = () => {
         )}
 
         {/* Desktop Filter Bar */}
-        <div className="hidden md:flex items-center gap-2">
-          <button
+        <div className="hidden md:flex items-center justify-between gap-2">
+         <div className="hidden md:flex items-center gap-2">
+         <button
             onClick={() => {
               setActiveFilter("all");
               setBudgetFilter("");
@@ -615,14 +667,11 @@ const SchoolDirectoryContent = () => {
                   {[
                     "DepEd",
                     "Montessori",
-                    "International",
                     "Christian",
-                    "Catholic",
                     "Progressive",
                     "Waldorf",
                     "Reggio Emilia",
                     "IB",
-                    "Cambridge",
                   ].map((curriculum) => (
                     <button
                       key={curriculum}
@@ -645,6 +694,12 @@ const SchoolDirectoryContent = () => {
               </div>
             )}
           </div>
+         </div>
+
+         <div>
+           <h6 className="font-medium text-black text-sm">We&apos;re are still adding more preschools across Metro Manila.</h6>
+            <p className="text-black text-sm font-normal text-right">New Schools are added every week.</p>
+         </div>
         </div>
 
         {/* Mobile Filter Section */}
@@ -875,14 +930,11 @@ const SchoolDirectoryContent = () => {
                   {[
                     "DepEd",
                     "Montessori",
-                    "International",
                     "Christian",
-                    "Catholic",
                     "Progressive",
                     "Waldorf",
                     "Reggio Emilia",
                     "IB",
-                    "Cambridge",
                   ].map((curriculum) => (
                     <button
                       key={curriculum}

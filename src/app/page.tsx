@@ -55,11 +55,13 @@ export default function Home() {
 
   // Enhanced search function for cities using Supabase
   const searchCities = async (query: string) => {
-    if (query.trim().length === 0) return [];
-
     try {
+      // Empty query: return all cities with counts
+      if (query.trim().length === 0) {
+        return await SchoolService.searchCities("");
+      }
       const results = await SchoolService.searchCities(query.trim());
-      return results.slice(0, 5); // Get top 5 city results
+      return results; // return full list; we limit via UI if needed
     } catch (error) {
       console.error("Error searching cities:", error);
       return [];
@@ -71,18 +73,65 @@ export default function Home() {
     const query = e.target.value;
     setSearchQuery(query);
 
-    if (query.trim().length > 0) {
-      setSearchLoading(true);
-      setShowResults(true);
-      // Search cities using Supabase
-      const filtered = await searchCities(query);
-      setSearchResults(filtered);
+    setSearchLoading(true);
+    setShowResults(true);
+    // When empty, show all cities
+    if (query.trim().length === 0) {
+      let allCities = await searchCities("");
+      // Fallback: derive cities client-side if none returned
+      if (!allCities || allCities.length === 0) {
+        try {
+          const allSchools = await SchoolService.getAllSchools();
+          const cityToCount: Record<string, number> = {};
+          allSchools.forEach((s) => {
+            s.city.split(",").map((c) => c.trim()).forEach((c) => {
+              if (!c) return;
+              cityToCount[c] = (cityToCount[c] || 0) + 1;
+            });
+          });
+          allCities = Object.entries(cityToCount)
+            .map(([city, schoolCount]) => ({ city, schoolCount }))
+            .sort((a, b) => a.city.localeCompare(b.city));
+        } catch (err) {
+          console.error('Fallback city derivation failed:', err);
+        }
+      }
+      setSearchResults(allCities || []);
       setSearchLoading(false);
-    } else {
-      setSearchResults([]);
-      setShowResults(false);
-      setSearchLoading(false);
+      return;
     }
+
+    // Otherwise, filter by query
+    const filtered = await searchCities(query);
+    setSearchResults(filtered);
+    setSearchLoading(false);
+  };
+
+  // Show all cities when input gains focus/clicked
+  const handleSearchFocus = async () => {
+    setShowResults(true);
+    setSearchLoading(true);
+    let allCities = await searchCities("");
+    // Fallback: derive cities client-side if none returned
+    if (!allCities || allCities.length === 0) {
+      try {
+        const allSchools = await SchoolService.getAllSchools();
+        const cityToCount: Record<string, number> = {};
+        allSchools.forEach((s) => {
+          s.city.split(",").map((c) => c.trim()).forEach((c) => {
+            if (!c) return;
+            cityToCount[c] = (cityToCount[c] || 0) + 1;
+          });
+        });
+        allCities = Object.entries(cityToCount)
+          .map(([city, schoolCount]) => ({ city, schoolCount }))
+          .sort((a, b) => a.city.localeCompare(b.city));
+      } catch (err) {
+        console.error('Fallback city derivation failed:', err);
+      }
+    }
+    setSearchResults(allCities || []);
+    setSearchLoading(false);
   };
 
   // Handle search functionality
@@ -155,15 +204,16 @@ export default function Home() {
               ref={searchRef}
             >
               <h4 className="text-[#0F0F0F] md:text-2xl text-base font-medium">
-                Search schools around Philippines
+              Search schools around Metro Manila
               </h4>
+              <p className="text-black"><span className="font-semibold">Now listing:</span> Taguig <i className="ri-checkbox-blank-circle-fill"></i> Makati <i className="ri-checkbox-blank-circle-fill"></i> Pasig <i className="ri-checkbox-blank-circle-fill"></i> Mandaluyong <i className="ri-checkbox-blank-circle-fill"></i> Quezon City <i className="ri-checkbox-blank-circle-fill"></i> Laguna</p>
               <div className="flex flex-col md:flex-row md:mt-6 mt-3 gap-2.5 rounded-2xl">
                 <div className="bg-[#f5f5f5] w-full md:w-[710px] p-3 md:p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-3 md:gap-5 relative">
-                  <i className="ri-search-line text-[#0E1C29]/40 text-xl md:text-2xl"></i>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={handleSearchChange}
+                    onFocus={handleSearchFocus}
                     placeholder="Search schools around Metro Manila"
                     className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
                   />
@@ -187,8 +237,8 @@ export default function Home() {
                   onClick={handleSearch}
                   className="bg-[#774BE5] md:w-fit w-full text-white p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 hover:bg-[#6B3FD6] transition-colors"
                 >
-                  Search
                   <i className="ri-search-line text-white text-lg mt-0.5"></i>
+                  Search
                 </button>
               </div>
             </form>
@@ -246,14 +296,16 @@ export default function Home() {
             <h4 className="text-[#0F0F0F] md:text-2xl text-base font-medium">
               Search schools around Metro Manila
             </h4>
+            <p className="text-gray-500 text-sm flex items-center gap-1"><span className="font-semibold">Now listing:</span> Taguig <i className="ri-checkbox-blank-circle-fill text-[6px] mt-1"></i> Makati <i className="ri-checkbox-blank-circle-fill text-[6px] mt-1"></i> Pasig <i className="ri-checkbox-blank-circle-fill text-[6px] mt-1"></i> Mandaluyong <i className="ri-checkbox-blank-circle-fill text-[6px] mt-1"></i> Quezon City <i className="ri-checkbox-blank-circle-fill text-[6px] mt-1"></i> Laguna</p>
+            <p className="text-gray-500 text-sm font-normal">We&apos;re still adding more schools each week.</p>
             <div className="flex flex-col md:flex-row md:mt-6 mt-3 gap-2.5 rounded-2xl">
               <div className="bg-[#f5f5f5] w-full md:w-[810px] p-3 md:p-4 md:rounded-[10px] rounded-full overflow-hidden flex items-center gap-3 md:gap-5 relative">
-                <i className="ri-search-line text-[#0E1C29]/40 text-xl md:text-2xl"></i>
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  placeholder="Search by city..."
+                  onFocus={handleSearchFocus}
+                  placeholder="Search schools around Metro Manila"
                   className="bg-transparent w-full text-sm md:text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none"
                 />
                 {searchQuery && (
@@ -276,8 +328,8 @@ export default function Home() {
                 onClick={handleSearch}
                 className="bg-[#774BE5] md:w-fit w-full text-white p-4 rounded-[10px] text-sm font-semibold flex items-center justify-center gap-1 hover:bg-[#6B3FD6] transition-colors"
               >
-                Search
                 <i className="ri-search-line text-white text-lg mt-0.5"></i>
+                Search
               </button>
             </div>
 

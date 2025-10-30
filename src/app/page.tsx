@@ -276,7 +276,7 @@ export default function Home() {
         className="w-full min-h-screen bg-cover bg-center flex flex-col items-center pb-40 px-5"
         style={{ backgroundImage: "url('/images/Hero.jpg')" }}
       >
-        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0 z-20">
+        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0 z-[1000]">
           <Navbar />
         </div>
         <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20 z-1">
@@ -335,7 +335,7 @@ export default function Home() {
 
             {/* Search Results Dropdown */}
             {showResults && (
-              <div className="absolute top-full left-2 right-2 md:left-5 md:right-5 mt-2 bg-white rounded-2xl shadow-xl border border-gray-200 z-50 max-h-80 overflow-y-auto">
+              <div className="absolute top-full left-2 right-2 md:left-5 md:right-5 mt-2 bg-white rounded-2xl shadow-xl border border-gray-200 z-10 max-h-80 overflow-y-auto">
                 <div className="p-3 md:p-4">
                   {searchLoading ? (
                     <>

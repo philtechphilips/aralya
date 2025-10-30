@@ -371,7 +371,7 @@ const SchoolDirectoryContent = () => {
         style={{ backgroundImage: "url('/images/Hero.jpg')" }}
       >
         <div className="w-full h-full absolute top-0 left-0 bg-black/20 z-0"></div>
-        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0 relative z-100">
+        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0 relative z-[1000]">
           <Navbar />
         </div>
         <div className="pt-13 flex flex-col items-center md:w-[930px] w-full px-0 md:px-0 mt-20 relative z-0">
@@ -413,7 +413,7 @@ const SchoolDirectoryContent = () => {
 
             {/* Search Results Dropdown */}
             {showResults && (
-              <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl border border-gray-200 z-[99] max-h-80 overflow-auto">
+              <div className="absolute top-full left-5 right-5 mt-2 bg-white rounded-2xl border border-gray-200 z-10 max-h-80 overflow-auto">
                 <div className="p-4">
                   <h5 className="text-sm font-semibold text-gray-600 mb-3">
                     Cities ({searchResults.length})
@@ -545,7 +545,7 @@ const SchoolDirectoryContent = () => {
             All
           </button>
 
-          <div className="relative filter-dropdown z-[10]">
+          <div className="relative filter-dropdown">
             <button
               onClick={() =>
                 setActiveFilter(activeFilter === "budget" ? "all" : "budget")
@@ -562,7 +562,7 @@ const SchoolDirectoryContent = () => {
             </button>
 
             {activeFilter === "budget" && (
-              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg border border-gray-200 min-w-48 z-[9] animate-in slide-in-from-top-2 duration-200">
+              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg border border-gray-200 min-w-48 animate-in slide-in-from-top-2 duration-200">
                 <div className="p-2">
                   {[
                     { key: "under-100k", label: "Under ₱100k", icon: "ri-money-dollar-box-line" },
@@ -593,7 +593,7 @@ const SchoolDirectoryContent = () => {
             )}
           </div>
 
-          <div className="relative filter-dropdown z-[100]">
+          <div className="relative filter-dropdown">
             <button
               onClick={() =>
                 setActiveFilter(activeFilter === "city" ? "all" : "city")
@@ -610,7 +610,7 @@ const SchoolDirectoryContent = () => {
             </button>
 
             {activeFilter === "city" && (
-              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg border border-gray-200 z-[9999] min-w-48 animate-in slide-in-from-top-2 duration-200">
+              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg border border-gray-200 min-w-48 animate-in slide-in-from-top-2 duration-200">
                 <div className="p-2">
                   {[
                     "Angeles City",
@@ -697,8 +697,8 @@ const SchoolDirectoryContent = () => {
          </div>
 
          <div>
-           <h6 className="font-medium text-black text-sm">We&apos;re are still adding more preschools across Metro Manila.</h6>
-            <p className="text-black text-sm font-normal text-right">New Schools are added every week.</p>
+           <h6 className="font-medium text-black text-sm">We&apos;re still adding more preschools across Metro Manila.</h6>
+            <p className="text-black text-xs font-normal text-right">New Schools are added every week.</p>
          </div>
         </div>
 
